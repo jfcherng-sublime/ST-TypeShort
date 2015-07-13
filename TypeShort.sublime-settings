@@ -1,0 +1,21 @@
+{
+    "bindings": [
+        // example settings
+        /*
+        {
+            "keymaps": {
+                "fj ": "$",
+                "dk ": "->"
+            },
+            "syntax_list": ["PHP"]
+        },
+        {
+            "keymaps": {
+                "fj ": "*",
+                "dk ": "->"
+            },
+            "syntax_list": ["C", "C++", "C++11", "C#", "Objective-C", "Objective-C++"]
+        }
+        */
+    ]
+}
