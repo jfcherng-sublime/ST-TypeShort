@@ -29,6 +29,10 @@ class typeShort():
         self.SETTINGS_FILE_NAME = "TypeShort.sublime-settings"
 
         self.plugin_settings = sublime.load_settings(self.SETTINGS_FILE_NAME)
+        self.plugin_settings.add_on_change("bindings", self.__refresh_settings)
+        self.__refresh_settings()
+
+    def __refresh_settings(self):
         self.bindings = self.plugin_settings.get("bindings", None)
 
     def do_replace(self, view, binding, lastInsertedChar):
