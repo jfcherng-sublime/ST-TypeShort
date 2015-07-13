@@ -16,6 +16,11 @@ This plugin will automatically replace `fj_` into `$` in PHP whenever you type i
 Although `fj_` has three characters, it could still be typed faster than a `$`.
 
 
+## Screenshot(s) ##
+
+![](https://raw.githubusercontent.com/jfcherng/sublime-TypeShort/gh-pages/images/screenshot.gif)
+
+
 ## Installation ##
 
 Install using Package Control (Recommended), or by cloning this repository into the Packages directory.
