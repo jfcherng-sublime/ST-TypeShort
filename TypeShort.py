@@ -36,6 +36,7 @@ class typeShort():
         self.bindings = self.plugin_settings.get("bindings", None)
 
     def do_replace(self, view, binding, lastInsertedChar):
+        replaced=False
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
             if not lastInsertedChar == search[-1]:
@@ -52,7 +53,9 @@ class typeShort():
                         "end": checkRegion.end(),
                         "replacement": replacement
                     })
-                    return True
+                    replaced=True
+            if replaced is True:
+                return True
         return False
 
 
