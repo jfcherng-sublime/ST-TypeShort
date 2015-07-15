@@ -2,6 +2,8 @@
 
 TypeShort is a snippet-like plugin for Sublime Text 3.
 
+The original idea comes from [VvPhpDollar](https://github.com/ZhaonanLi/VvPhpDollar) by [ZhaonanLi](https://github.com/ZhaonanLi).
+
 It will replace placeholders into corresponding replacements in real-time while typing.
 
 
