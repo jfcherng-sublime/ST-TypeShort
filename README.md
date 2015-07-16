@@ -35,7 +35,7 @@ Note that this plugin need you to set your own (`placeholder`, `replacement`) pa
 Edit settings from the menu `Preferences » Package Settings » TypeShort » Settings - User`.
 
 Settings structure:
-```json
+```javascript
 {
     "bindings": [
         {
@@ -52,21 +52,29 @@ Settings structure:
 ```
 
 Example settings:
-```json
+```javascript
 {
+    // This file is an example settigns.
+    // You should write your own settings in "Preferences » Package Settings » TypeShort » Settings - User"
     "bindings": [
         {
+            // convert 'fj ' into '$'
+            // convert 'dk ' into '->'
             "keymaps": {
                 "fj ": "$",
                 "dk ": "->"
             },
+            // only work in PHP syntax
             "syntax_list": ["PHP"]
         },
         {
+            // convert 'fj ' into '*'
+            // convert 'dk ' into '->'
             "keymaps": {
                 "fj ": "*",
                 "dk ": "->"
             },
+            // only work in C-like syntax
             "syntax_list": ["C", "C++", "C++11", "C#", "Objective-C", "Objective-C++"]
         }
     ]
