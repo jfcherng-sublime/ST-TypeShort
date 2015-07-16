@@ -17,8 +17,8 @@
 						[
 							{
 								"command": "open_file",
-								"args": {"file": "${packages}/TypeShort/TypeShort.sublime-settings"},
-								"caption": "Settings – Default"
+								"args": {"file": "${packages}/TypeShort/example.sublime-settings"},
+								"caption": "Settings – Example"
 							},
 							{
 								"command": "open_file",
