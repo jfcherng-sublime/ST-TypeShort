@@ -54,7 +54,7 @@ Settings structure:
 Example settings:
 ```javascript
 {
-    // This file is an example settigns.
+    // This file is an example settings.
     // You should write your own settings in "Preferences » Package Settings » TypeShort » Settings - User"
     "bindings": [
         {
