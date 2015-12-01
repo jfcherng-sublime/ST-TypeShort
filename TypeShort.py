@@ -8,6 +8,7 @@ All rights reserved.
 
 
 import os
+import re
 import sublime
 import sublime_plugin
 
@@ -84,10 +85,18 @@ class typeShortListener(sublime_plugin.EventListener):
             return
         lastInsertedChar = historyCmd[1]['characters']
 
+        # collect scopes from selections
+        scopes = set()
+        for editRegion in view.sel():
+            sources = re.findall('source.[^\s]+', view.scope_name(editRegion.begin()))
+            if sources:
+                scopes.add(sources[0])
+        # add the current syntax into scopes
+        scopes.add(self.get_syntax(view))
+
         obj = typeShort()
-        currentSyntax = self.get_syntax(view)
         for binding in obj.bindings:
-            if currentSyntax in binding['syntax_list']:
+            if scopes.intersection(set(binding['syntax_list'])):
                 replaced = obj.do_replace(view, binding, lastInsertedChar)
                 if replaced is True:
                     break
