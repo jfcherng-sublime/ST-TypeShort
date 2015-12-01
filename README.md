@@ -56,6 +56,12 @@ Example settings:
 {
     // This file is an example settings.
     // You should write your own settings in "Preferences » Package Settings » TypeShort » Settings - User"
+
+    // You can alternatively use either syntaxes or scopes in the "syntax_list".
+    //     syntax: it's package-dependent and shown in the bottom-right corner of your ST windows
+    //     scope : it's in the form of source.xxx
+    //             you may check it with a plugin like ScopeAlways or ScopeHunter
+
     "bindings": [
         {
             // convert 'fj ' into '$'
@@ -64,8 +70,8 @@ Example settings:
                 "fj ": "$",
                 "dk ": "->"
             },
-            // only work in PHP syntax
-            "syntax_list": ["PHP"]
+            // only work in PHP
+            "syntax_list": ["source.php"]
         },
         {
             // convert 'fj ' into '*'
@@ -74,8 +80,8 @@ Example settings:
                 "fj ": "*",
                 "dk ": "->"
             },
-            // only work in C-like syntax
-            "syntax_list": ["C", "C++", "C++11", "C#", "Objective-C", "Objective-C++"]
+            // only work in C/C++
+            "syntax_list": ["source.c", "source.c++", "source.c++11"]
         }
     ]
 }
