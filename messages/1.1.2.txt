@@ -1,0 +1,17 @@
+TypeShort v1.1.1 changelog:
+
+New features:
+
+- Add debug options
+
+      Some packages' syntax is just not the same with the one shown in the
+  bottom-right window of ST. By turning on the "debug" option of TypeShort,
+  syntaxes/scopes match at current cursor will show in a popup message.
+
+      For an example, while using the "Laravel Blade Highlighter" package, the
+  bottom-right window of ST shows "Laravel Blade" but, in fact, its syntax is
+  "blade".
+
+TypeShort v1.1.2 changelog:
+
+- Fix a typo in messages.json
