@@ -35,6 +35,7 @@ class typeShort():
 
     def __refresh_settings(self):
         self.bindings = self.plugin_settings.get("bindings", None)
+        self.debug = self.plugin_settings.get("debug", False)
 
     def do_replace(self, view, binding, lastInsertedChar):
         replaced=False
@@ -85,6 +86,8 @@ class typeShortListener(sublime_plugin.EventListener):
             return
         lastInsertedChar = historyCmd[1]['characters']
 
+        obj = typeShort()
+
         # collect scopes from selections
         scopes = set()
         for editRegion in view.sel():
@@ -94,7 +97,10 @@ class typeShortListener(sublime_plugin.EventListener):
         # add the current syntax into scopes
         scopes.add(self.get_syntax(view))
 
-        obj = typeShort()
+        # debug
+        if obj.debug is True:
+            view.show_popup(', '.join(scopes))
+
         for binding in obj.bindings:
             if scopes.intersection(set(binding['syntax_list'])):
                 replaced = obj.do_replace(view, binding, lastInsertedChar)
