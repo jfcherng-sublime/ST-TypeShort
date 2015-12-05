@@ -58,10 +58,11 @@ Example settings:
     // You should write your own settings in "Preferences » Package Settings » TypeShort » Settings - User"
 
     // You can alternatively use either syntaxes or scopes in the "syntax_list".
-    //     syntax: it's package-dependent and shown in the bottom-right corner of your ST windows
+    //     syntax: it's package-dependent and usually as shown in the bottom-right corner of your ST windows
     //     scope : it's in the form of source.xxx
-    //             you may check it with a plugin like ScopeAlways or ScopeHunter
+    // You may turn on the "debug" options to see what syntaxes/scopes match at current cursor.
 
+    "debug": false,
     "bindings": [
         {
             // convert 'fj ' into '$'
