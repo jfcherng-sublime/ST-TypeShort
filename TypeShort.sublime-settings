@@ -9,6 +9,7 @@
 
     "debug": false,
     "bindings": [
+    /*
         {
             // convert 'fj ' into '$'
             // convert 'dk ' into '->'
@@ -29,5 +30,6 @@
             // only work in C/C++
             "syntax_list": ["source.c", "source.c++", "source.c++11"]
         }
+    */
     ]
 }
