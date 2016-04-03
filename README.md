@@ -1,37 +1,31 @@
-# TypeShort #
-
+TypeShort
+=========
 TypeShort is a snippet-like plugin for Sublime Text 3.
-
 The original idea comes from [VvPhpDollar](https://github.com/ZhaonanLi/VvPhpDollar) by [ZhaonanLi](https://github.com/ZhaonanLi).
-
 It will replace placeholders into corresponding replacements in real-time while typing.
 
 
-## Usage ##
-
+Usage
+=====
 For example, typing a `$` or a `->` in PHP may be just not that comfortable.
-
 You can set `fj_` (`_` means a space here, just for interpretation) as a placeholder for `$` in PHP.
-
 This plugin will automatically replace `fj_` into `$` in PHP whenever you type it.
-
 Although `fj_` has three characters, it could still be typed faster than a `$`.
 
 
-## Screenshot(s) ##
-
+Screenshots
+===========
 ![](https://raw.githubusercontent.com/jfcherng/sublime-TypeShort/gh-pages/images/screenshot.gif)
 
 
-## Installation ##
-
+Installation
+============
 Install using Package Control (Recommended), or by cloning this repository into the Packages directory.
-
 Note that this plugin need you to set your own (`placeholder`, `replacement`) pairs to work properly.
 
 
-## Settings ##
-
+Settings
+========
 Edit settings from the menu `Preferences » Package Settings » TypeShort » Settings - User`.
 
 Settings structure:
@@ -87,3 +81,27 @@ Example settings:
     ]
 }
 ```
+
+License
+=======
+The MIT License (MIT)
+
+Copyright (c) 2016 Jack Cherng
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
