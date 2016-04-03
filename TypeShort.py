@@ -29,6 +29,8 @@ class typeShortListener(sublime_plugin.EventListener):
         self.sourceRegex = re.compile(r'\b(?:source|text).[^\s]+')
 
     def on_modified(self, view):
+        """ called after changes have been made to a view """
+
         # fix the issue that breaks functionality for Ctrl+Z
         historyCmd = view.command_history(1)
         if historyCmd[0] == 'type_short':
@@ -42,8 +44,8 @@ class typeShortListener(sublime_plugin.EventListener):
 
         # collect scopes from selections
         scopes = set()
-        for selection in view.sel():
-            scopes |= set(self.sourceRegex.findall(view.scope_name(selection.begin())))
+        for region in view.sel():
+            scopes |= set(self.sourceRegex.findall(view.scope_name(region.begin())))
         # add the current syntax into scopes
         scopes.add(self.getSyntax(view))
 
@@ -51,9 +53,11 @@ class typeShortListener(sublime_plugin.EventListener):
             if scopes.intersection(set(binding['syntax_list'])):
                 replaced = self.doReplace(view, binding, lastInsertedChar)
                 if replaced is True:
-                    break
+                    return
 
     def getSyntax(self, view):
+        """ get the syntax which is on the bottom-right corner of ST """
+
         return os.path.splitext(os.path.basename(view.settings().get('syntax')))[0]
 
     def doReplace(self, view, binding, lastInsertedChar):
@@ -63,18 +67,18 @@ class typeShortListener(sublime_plugin.EventListener):
             if lastInsertedChar != search[-1]:
                 continue
             # iterate each selection
-            for selection in view.sel():
+            for region in view.sel():
                 checkRegion = sublime.Region(
-                    selection.begin() - len(search),
-                    selection.end()
+                    region.begin() - len(search),
+                    region.end()
                 )
                 if view.substr(checkRegion) == search:
+                    replaced = True
                     view.run_command('type_short', {
                         'begin': checkRegion.begin(),
                         'end': checkRegion.end(),
                         'replacement': replacement
                     })
-                    replaced = True
             if replaced is True:
                 break
         return replaced
