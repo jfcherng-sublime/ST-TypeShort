@@ -38,7 +38,7 @@ class typeShortListener(sublime_plugin.EventListener):
     global settings
 
     def __init__(self):
-        self.sourceRegex = re.compile(r'\b(?:source|text).[^\s]+')
+        self.sourceRegex = re.compile(r'\b(?:source|text)\.[^\s]+')
 
     def on_modified(self, view):
         """ called after changes have been made to a view """
