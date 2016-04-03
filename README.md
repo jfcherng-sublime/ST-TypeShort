@@ -7,15 +7,12 @@ It will replace placeholders into corresponding replacements in real-time while 
 
 Usage
 =====
-For example, typing a `$` or a `->` in PHP may be just not that comfortable.
-You can set `fj_` (`_` means a space here, just for interpretation) as a placeholder for `$` in PHP.
-This plugin will automatically replace `fj_` into `$` in PHP whenever you type it.
-Although `fj_` has three characters, it could still be typed faster than a `$`.
-
-
-Screenshots
-===========
 ![](https://raw.githubusercontent.com/jfcherng/sublime-TypeShort/gh-pages/images/screenshot.gif)
+
+For example, typing a `$` or a `->` in PHP may be just not that comfortable.
+You can set `fj_` (`_` represents a space here for better visibility) as a placeholder for `$` in PHP.
+This plugin will automatically replace `fj_` with `$` in PHP whenever you type it.
+Although `fj_` has three characters, it could be typed faster than a `$` due to the keyboard layout.
 
 
 Installation
@@ -28,24 +25,7 @@ Settings
 ========
 Edit settings from the menu `Preferences » Package Settings » TypeShort » Settings - User`.
 
-Settings structure:
-```javascript
-{
-    "bindings": [
-        {
-            "keymaps": {
-                "placeholder_1": "replacement_1",
-                "placeholder_2": "replacement_2"
-                ...
-            },
-            "syntax_list": ["syntax_1", "syntax_2", ...]
-        },
-        ...
-    ]
-}
-```
-
-Example settings:
+## Example settings
 ```javascript
 {
     // This file is an example settings.
