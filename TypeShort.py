@@ -67,7 +67,7 @@ class typeShortListener(sublime_plugin.EventListener):
                     return
 
     def getSyntax(self, view):
-        """ get the syntax which is on the bottom-right corner of ST """
+        """ get the syntax file name which is usually on the bottom-right corner of ST """
 
         return os.path.splitext(os.path.basename(view.settings().get('syntax')))[0]
 
