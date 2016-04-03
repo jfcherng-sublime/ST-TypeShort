@@ -1,3 +1,0 @@
-- Performance improvement for multiple cursors
-- Better undo/soft_undo behavior
-- Remove the debug functionality since `ctrl+alt+shift+p` does it
