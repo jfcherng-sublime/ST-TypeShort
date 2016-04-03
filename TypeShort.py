@@ -18,8 +18,20 @@ def plugin_loaded():
 
 
 class typeShortCommand(sublime_plugin.TextCommand):
-    def run(self, edit, begin, end, replacement):
-        self.view.replace(edit, sublime.Region(begin, end), replacement)
+    def run(self, edit, regions=[], replacement=''):
+        # regions need to be replaced in a reversed sorted order
+        regions = self.reverseSortRegions(regions)
+        for region in regions:
+            self.view.replace(
+                edit,
+                sublime.Region(region[0], region[1]),
+                replacement
+            )
+
+    def reverseSortRegions(self, regions):
+        """ sort regions in a descending order """
+
+        return sorted(regions, key=lambda region: region[0], reverse=True)
 
 
 class typeShortListener(sublime_plugin.EventListener):
@@ -67,6 +79,7 @@ class typeShortListener(sublime_plugin.EventListener):
             if lastInsertedChar != search[-1]:
                 continue
             # iterate each selection
+            regionsToBeReplaced = list()
             for region in view.sel():
                 checkRegion = sublime.Region(
                     region.begin() - len(search),
@@ -74,11 +87,14 @@ class typeShortListener(sublime_plugin.EventListener):
                 )
                 if view.substr(checkRegion) == search:
                     replaced = True
-                    view.run_command('type_short', {
-                        'begin': checkRegion.begin(),
-                        'end': checkRegion.end(),
-                        'replacement': replacement
-                    })
+                    regionsToBeReplaced.append((
+                        checkRegion.begin(),
+                        checkRegion.end()
+                    ))
             if replaced is True:
+                view.run_command('type_short', {
+                    'regions': regionsToBeReplaced,
+                    'replacement': replacement
+                })
                 break
         return replaced
