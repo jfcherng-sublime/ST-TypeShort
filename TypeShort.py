@@ -43,7 +43,7 @@ class typeShortListener(sublime_plugin.EventListener):
     def on_modified(self, view):
         """ called after changes have been made to a view """
 
-        # fix the issue that breaks functionality for Ctrl+Z
+        # fix the issue that breaks functionality for undo/soft_undo
         historyCmd = view.command_history(1)
         if historyCmd[0] == 'type_short':
             return
@@ -54,17 +54,16 @@ class typeShortListener(sublime_plugin.EventListener):
             return
         lastInsertedChar = historyCmd[1]['characters']
 
-        # collect scopes from selections
-        scopes = set()
+        # collect scopes from the selection
+        scopes = { self.getSyntax(view) }
         for region in view.sel():
             scopes |= set(self.sourceRegex.findall(view.scope_name(region.begin())))
-        # add the current syntax into scopes
-        scopes.add(self.getSyntax(view))
 
+        # try possible working bindings
         for binding in settings.get('bindings', []):
-            if scopes.intersection(set(binding['syntax_list'])):
-                replaced = self.doReplace(view, binding, lastInsertedChar)
-                if replaced is True:
+            if scopes & set(binding['syntax_list']):
+                success = self.doReplace(view, binding, lastInsertedChar)
+                if success is True:
                     return
 
     def getSyntax(self, view):
@@ -73,28 +72,26 @@ class typeShortListener(sublime_plugin.EventListener):
         return os.path.splitext(os.path.basename(view.settings().get('syntax')))[0]
 
     def doReplace(self, view, binding, lastInsertedChar):
-        replaced = False
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
             if lastInsertedChar != search[-1]:
                 continue
-            # iterate each selection
-            regionsToBeReplaced = list()
+            # iterate each region
+            regionsToBeReplaced = []
             for region in view.sel():
                 checkRegion = sublime.Region(
                     region.begin() - len(search),
                     region.end()
                 )
                 if view.substr(checkRegion) == search:
-                    replaced = True
                     regionsToBeReplaced.append((
                         checkRegion.begin(),
                         checkRegion.end()
                     ))
-            if replaced is True:
+            if regionsToBeReplaced:
                 view.run_command('type_short', {
                     'regions': regionsToBeReplaced,
                     'replacement': replacement
                 })
-                break
-        return replaced
+                return True
+        return False
