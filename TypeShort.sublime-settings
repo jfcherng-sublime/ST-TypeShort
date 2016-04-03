@@ -2,9 +2,10 @@
     // This file is an example settings.
     // You should write your own settings in "Preferences » Package Settings » TypeShort » Settings - User"
 
-    // You can alternatively use either syntaxes or scopes in the "syntax_list".
-    //     syntax: it's package-dependent and usually as shown in the bottom-right corner of your ST windows
-    //     scope : ctrl+alt+shift+p shows it which is in the form of source.xxx/text.xxx
+    // You can alternatively use either syntax file name, syntax name or scopes in the "syntax_list".
+    // - syntax file name: The syntax file name without extension.
+    // - syntax name: It's package-dependent and as shown on the bottom-right corner of your ST windows.
+    // - scope: ctrl+alt+shift+p shows it which is in the form of "source.xxx/text.xxx".
     "bindings": [
     /*
         {
