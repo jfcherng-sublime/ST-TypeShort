@@ -1,112 +1,80 @@
-"""
-typeShort is a free software under MIT license.
-This plugin allows you to set shortcuts for certain strings.
-
-Copyright (c) 2015, jfcherng.
-All rights reserved.
-"""
-
-
 import os
 import re
 import sublime
 import sublime_plugin
 
 
-def Singleton(class_):
-    instances = {}
+PLUGIN_NAME = 'TypeShort'
+PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
+PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
 
-    def getinstance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-    return getinstance
+settings = None
 
 
-@Singleton
-class typeShort():
+def plugin_loaded():
+    global settings
 
-    def __init__(self):
-        self.SETTINGS_FILE_NAME = "TypeShort.sublime-settings"
-
-        self.plugin_settings = sublime.load_settings(self.SETTINGS_FILE_NAME)
-        self.plugin_settings.add_on_change("bindings", self.__refresh_settings)
-        self.__refresh_settings()
-
-    def __refresh_settings(self):
-        self.bindings = self.plugin_settings.get("bindings", None)
-        self.debug = self.plugin_settings.get("debug", False)
-
-    def do_replace(self, view, binding, lastInsertedChar):
-        replaced=False
-        for search, replacement in binding['keymaps'].items():
-            # skip a keymap as early as possible
-            if not lastInsertedChar == search[-1]:
-                continue
-            # iterate each selection
-            for editRegion in view.sel():
-                checkRegion = sublime.Region(
-                    editRegion.begin() - len(search),
-                    editRegion.end()
-                )
-                if view.substr(checkRegion) == search:
-                    view.run_command("type_short", {
-                        "begin": checkRegion.begin(),
-                        "end": checkRegion.end(),
-                        "replacement": replacement
-                    })
-                    replaced=True
-            if replaced is True:
-                return True
-        return False
+    settings = sublime.load_settings(PLUGIN_SETTINGS)
 
 
 class typeShortCommand(sublime_plugin.TextCommand):
-
     def run(self, edit, begin, end, replacement):
         self.view.replace(edit, sublime.Region(begin, end), replacement)
 
 
 class typeShortListener(sublime_plugin.EventListener):
+    global settings
 
-    def get_syntax(self, view):
-        syntax = os.path.basename(view.settings().get("syntax"))
-        syntax = os.path.splitext(syntax)[0]
-        return syntax
+    def __init__(self):
+        self.sourceRegex = re.compile(r'\b(?:source|text).[^\s]+')
 
     def on_modified(self, view):
-        # Fix the issue that breaks functionality for Ctrl+Z
+        # fix the issue that breaks functionality for Ctrl+Z
         historyCmd = view.command_history(1)
         if historyCmd[0] == 'type_short':
             return
 
-        # Get the last press key
+        # get the last press key
         historyCmd = view.command_history(0)
-        if not historyCmd[0] == 'insert':
+        if historyCmd[0] != 'insert':
             return
         lastInsertedChar = historyCmd[1]['characters']
 
-        obj = typeShort()
-
         # collect scopes from selections
         scopes = set()
-        for editRegion in view.sel():
-            sources = re.findall('source.[^\s]+', view.scope_name(editRegion.begin()))
-            if sources:
-                scopes.add(sources[0])
+        for selection in view.sel():
+            scopes |= set(self.sourceRegex.findall(view.scope_name(selection.begin())))
         # add the current syntax into scopes
-        scopes.add(self.get_syntax(view))
+        scopes.add(self.getSyntax(view))
 
-        # debug
-        if obj.debug is True:
-            view.show_popup(', '.join(scopes))
-
-        for binding in obj.bindings:
+        for binding in settings.get('bindings', []):
             if scopes.intersection(set(binding['syntax_list'])):
-                replaced = obj.do_replace(view, binding, lastInsertedChar)
+                replaced = self.doReplace(view, binding, lastInsertedChar)
                 if replaced is True:
                     break
 
+    def getSyntax(self, view):
+        return os.path.splitext(os.path.basename(view.settings().get('syntax')))[0]
 
-def plugin_loaded():
-    typeShort()
+    def doReplace(self, view, binding, lastInsertedChar):
+        replaced = False
+        for search, replacement in binding['keymaps'].items():
+            # skip a keymap as early as possible
+            if lastInsertedChar != search[-1]:
+                continue
+            # iterate each selection
+            for selection in view.sel():
+                checkRegion = sublime.Region(
+                    selection.begin() - len(search),
+                    selection.end()
+                )
+                if view.substr(checkRegion) == search:
+                    view.run_command('type_short', {
+                        'begin': checkRegion.begin(),
+                        'end': checkRegion.end(),
+                        'replacement': replacement
+                    })
+                    replaced = True
+            if replaced is True:
+                break
+        return replaced
