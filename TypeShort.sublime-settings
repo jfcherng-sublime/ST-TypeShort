@@ -4,10 +4,7 @@
 
     // You can alternatively use either syntaxes or scopes in the "syntax_list".
     //     syntax: it's package-dependent and usually as shown in the bottom-right corner of your ST windows
-    //     scope : it's in the form of source.xxx
-    // You may turn on the "debug" options to see what syntaxes/scopes match at current cursor.
-
-    "debug": false,
+    //     scope : ctrl+alt+shift+p shows it which is in the form of source.xxx/text.xxx
     "bindings": [
     /*
         {
