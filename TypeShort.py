@@ -10,6 +10,14 @@ PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
 
 settings = None
 
+# {
+#     syntaxFile: {
+#         'fileName'  : '...',
+#         'syntaxName': '...',
+#     }
+# }
+syntaxInfos = {}
+
 
 def plugin_loaded():
     global settings
@@ -35,7 +43,7 @@ class typeShortCommand(sublime_plugin.TextCommand):
 
 
 class typeShortListener(sublime_plugin.EventListener):
-    global settings
+    global settings, syntaxInfos
 
     def __init__(self):
         self.sourceRegex = re.compile(r'\b(?:source|text)\.[^\s]+')
@@ -55,7 +63,7 @@ class typeShortListener(sublime_plugin.EventListener):
         lastInsertedChar = historyCmd[1]['characters']
 
         # collect scopes from the selection
-        scopes = { self.getSyntax(view) }
+        scopes = set(self.getCurrentSyntax(view))
         for region in view.sel():
             scopes |= set(self.sourceRegex.findall(view.scope_name(region.begin())))
 
@@ -66,10 +74,46 @@ class typeShortListener(sublime_plugin.EventListener):
                 if success is True:
                     return
 
-    def getSyntax(self, view):
-        """ get the syntax file name which is usually on the bottom-right corner of ST """
+    def getCurrentSyntax(self, view):
+        """ get the syntax file name and the syntax name which is on the bottom-right corner of ST """
 
-        return os.path.splitext(os.path.basename(view.settings().get('syntax')))[0]
+        syntaxFile = view.settings().get('syntax')
+        if syntaxFile not in syntaxInfos:
+            syntaxInfos[syntaxFile] = {
+                'fileName'   : os.path.splitext(os.path.basename(syntaxFile))[0],
+                'syntaxName' : self.findSyntaxName(syntaxFile),
+            }
+        return [v for v in syntaxInfos[syntaxFile].values() if v is not None]
+
+    def findSyntaxName(self, syntaxFile):
+        content = sublime.load_resource(syntaxFile).strip()
+        # .tmLanguage (XML)
+        if content.startswith('<'):
+            cutPos = content.find('<key>name</key>')
+            # early return
+            if cutPos == -1:
+                return None
+            # cut string to speed up searching
+            content = content[cutPos:]
+            matches = re.search(r'<key>name</key>\s*<string>(.*?)</string>', content, re.DOTALL)
+            if matches is not None:
+                return matches.group(1).strip()
+            else:
+                return None
+        # .sublime-syntax (YAML)
+        else:
+            # strip everything since "contexts:" to speed up searching
+            cutPos = content.find('contexts:')
+            if cutPos != -1:
+                content = content[:cutPos]
+            # early return
+            if content.find('name:') == -1:
+                return None
+            matches = re.search(r'^name:(.*)$', content, re.MULTILINE)
+            if matches is not None:
+                return matches.group(1).strip()
+            else:
+                return None
 
     def doReplace(self, view, binding, lastInsertedChar):
         for search, replacement in binding['keymaps'].items():
