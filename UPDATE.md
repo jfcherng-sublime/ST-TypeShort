@@ -1,3 +1,14 @@
+TypeShort 1.3.0
+===============
+
+- Syntax name can be used in `syntax_list` now.
+
+      For an example, while using the `Laravel Blade Highlighter` package,
+  `blade` (syntax file name), `text.blade` (scope) and `Laravel Blade`
+  (syntax name, on the bottom-right corner of the ST window) are all working in
+  the `syntax_list`.
+
+
 TypeShort 1.2.1
 ===============
 
@@ -27,9 +38,9 @@ TypeShort 1.1.1
   bottom-right window of ST. By turning on the "debug" option of TypeShort,
   syntaxes/scopes match at current cursor will show in a popup message.
 
-      For an example, while using the "Laravel Blade Highlighter" package, the
-  bottom-right window of ST shows "Laravel Blade" but, in fact, its syntax is
-  "blade".
+      For an example, while using the `Laravel Blade Highlighter` package, the
+  bottom-right window of ST shows `Laravel Blade`. But, in fact, its syntax is
+  `text.blade`.
 
 
 TypeShort 1.1.0
