@@ -1,3 +1,9 @@
+TypeShort 1.2.1
+===============
+
+- Fix a regex typo.
+
+
 TypeShort 1.2.0
 ===============
 
