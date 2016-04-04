@@ -65,13 +65,21 @@ class typeShortListener(sublime_plugin.EventListener):
         lastInsertedChar = historyCmd[1]['characters']
 
         # collect scopes from the selection
-        scopes = set(self.getCurrentSyntax(view))
-        for region in view.sel():
-            scopes |= set(self.sourceScopeRegex.findall(view.scope_name(region.begin())))
+        # we expect the fact that most regions would have the same scope
+        scopesInSeletion = {
+            view.scope_name(region.begin()).rstrip()
+            for region in view.sel()
+        }
+
+        # generate valid source scopes
+        sourceScopes = (
+            set(self.getCurrentSyntax(view)) |
+            set(self.sourceScopeRegex.findall(' '.join(scopesInSeletion)))
+        )
 
         # try possible working bindings
         for binding in settings.get('bindings', []):
-            if scopes & set(binding['syntax_list']):
+            if sourceScopes & set(binding['syntax_list']):
                 success = self.doReplace(view, binding, lastInsertedChar)
                 if success is True:
                     return
