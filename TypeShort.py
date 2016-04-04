@@ -46,7 +46,9 @@ class typeShortListener(sublime_plugin.EventListener):
     global settings, syntaxInfos
 
     def __init__(self):
-        self.sourceRegex = re.compile(r'\b(?:source|text)\.[^\s]+')
+        self.sourceScopeRegex = re.compile(r'\b(?:source|text)\.[^\s]+')
+        self.nameXmlRegex = re.compile(r'<key>name</key>\s*<string>(.*?)</string>', re.DOTALL)
+        self.nameYamlRegex = re.compile(r'^name\s*:(.*)$', re.MULTILINE)
 
     def on_modified(self, view):
         """ called after changes have been made to a view """
@@ -65,7 +67,7 @@ class typeShortListener(sublime_plugin.EventListener):
         # collect scopes from the selection
         scopes = set(self.getCurrentSyntax(view))
         for region in view.sel():
-            scopes |= set(self.sourceRegex.findall(view.scope_name(region.begin())))
+            scopes |= set(self.sourceScopeRegex.findall(view.scope_name(region.begin())))
 
         # try possible working bindings
         for binding in settings.get('bindings', []):
@@ -83,37 +85,20 @@ class typeShortListener(sublime_plugin.EventListener):
                 'fileName'   : os.path.splitext(os.path.basename(syntaxFile))[0],
                 'syntaxName' : self.findSyntaxName(syntaxFile),
             }
-        return [v for v in syntaxInfos[syntaxFile].values() if v is not None]
+        return [v for v in syntaxInfos[syntaxFile].values() if isinstance(v, str)]
 
     def findSyntaxName(self, syntaxFile):
         content = sublime.load_resource(syntaxFile).strip()
         # .tmLanguage (XML)
         if content.startswith('<'):
-            cutPos = content.find('<key>name</key>')
-            # early return
-            if cutPos == -1:
-                return None
-            # cut string to speed up searching
-            content = content[cutPos:]
-            matches = re.search(r'<key>name</key>\s*<string>(.*?)</string>', content, re.DOTALL)
-            if matches is not None:
-                return matches.group(1).strip()
-            else:
-                return None
+            matches = self.nameXmlRegex.search(content)
         # .sublime-syntax (YAML)
         else:
-            # strip everything since "contexts:" to speed up searching
-            cutPos = content.find('contexts:')
-            if cutPos != -1:
-                content = content[:cutPos]
-            # early return
-            if content.find('name:') == -1:
-                return None
-            matches = re.search(r'^name:(.*)$', content, re.MULTILINE)
-            if matches is not None:
-                return matches.group(1).strip()
-            else:
-                return None
+            matches = self.nameYamlRegex.search(content)
+        if matches is not None:
+            return matches.group(1).strip()
+        else:
+            return None
 
     def doReplace(self, view, binding, lastInsertedChar):
         for search, replacement in binding['keymaps'].items():
