@@ -1,3 +1,9 @@
+TypeShort 1.3.1
+===============
+
+- Minor performance improvement.
+
+
 TypeShort 1.3.0
 ===============
 
