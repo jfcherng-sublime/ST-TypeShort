@@ -88,6 +88,8 @@ class typeShortListener(sublime_plugin.EventListener):
         return [v for v in syntaxInfos[syntaxFile].values() if isinstance(v, str)]
 
     def findSyntaxName(self, syntaxFile):
+        """ find the name section in the give syntax file path """
+
         content = sublime.load_resource(syntaxFile).strip()
         # .tmLanguage (XML)
         if content.startswith('<'):
@@ -101,6 +103,8 @@ class typeShortListener(sublime_plugin.EventListener):
             return None
 
     def doReplace(self, view, binding, lastInsertedChar):
+        """ try to do replacement with given a binding and a last inserted char """
+
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
             if lastInsertedChar != search[-1]:
