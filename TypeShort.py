@@ -4,7 +4,7 @@ import sublime
 import sublime_plugin
 
 
-PLUGIN_NAME = 'TypeShort'
+PLUGIN_NAME = __package__
 PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
 PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
 
