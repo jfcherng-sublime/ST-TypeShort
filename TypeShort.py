@@ -62,7 +62,7 @@ class typeShortListener(sublime_plugin.EventListener):
         historyCmd = view.command_history(0)
         if historyCmd[0] != 'insert':
             return
-        lastInsertedChar = historyCmd[1]['characters']
+        lastInsertedStr = historyCmd[1]['characters']
 
         # collect scopes from the selection
         # we expect the fact that most regions would have the same scope
@@ -80,7 +80,7 @@ class typeShortListener(sublime_plugin.EventListener):
         # try possible working bindings
         for binding in settings.get('bindings', []):
             if sourceScopes & set(binding['syntax_list']):
-                success = self.doReplace(view, binding, lastInsertedChar)
+                success = self.doReplace(view, binding, lastInsertedStr)
                 if success is True:
                     return
 
@@ -110,12 +110,12 @@ class typeShortListener(sublime_plugin.EventListener):
         else:
             return None
 
-    def doReplace(self, view, binding, lastInsertedChar):
+    def doReplace(self, view, binding, lastInsertedStr):
         """ try to do replacement with given a binding and a last inserted char """
 
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
-            if lastInsertedChar != search[-1]:
+            if not search.endswith(lastInsertedStr) and not lastInsertedStr.endswith(search):
                 continue
             # iterate each region
             regionsToBeReplaced = []
