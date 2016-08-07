@@ -1,3 +1,9 @@
+TypeShort 1.3.3
+===============
+
+- Fix `historyEntry['characters']` may be longer than a single character. (SirNickolas)
+
+
 TypeShort 1.3.2
 ===============
 
