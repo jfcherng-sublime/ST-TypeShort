@@ -2,11 +2,13 @@ import os
 import re
 import sublime
 import sublime_plugin
+from .functions import camelcaseToUnderscore
 
 
 PLUGIN_NAME = __package__
 PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
 PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
+PLUGIN_CMD = camelcaseToUnderscore(PLUGIN_NAME)
 
 settings = None
 
@@ -55,7 +57,7 @@ class typeShortListener(sublime_plugin.EventListener):
 
         # fix the issue that breaks functionality for undo/soft_undo
         historyCmd = view.command_history(1)
-        if historyCmd[0] == 'type_short':
+        if historyCmd[0] == PLUGIN_CMD:
             return
 
         # get the last press key
@@ -115,7 +117,10 @@ class typeShortListener(sublime_plugin.EventListener):
 
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
-            if not search.endswith(lastInsertedStr) and not lastInsertedStr.endswith(search):
+            if not (
+                search.endswith(lastInsertedStr) or
+                lastInsertedStr.endswith(search)
+            ):
                 continue
             # iterate each region
             regionsToBeReplaced = []
@@ -130,9 +135,9 @@ class typeShortListener(sublime_plugin.EventListener):
                         checkRegion.end()
                     ))
             if regionsToBeReplaced:
-                view.run_command('type_short', {
-                    'regions': regionsToBeReplaced,
-                    'replacement': replacement
+                view.run_command(PLUGIN_CMD, {
+                    'regions'     : regionsToBeReplaced,
+                    'replacement' : replacement,
                 })
                 return True
         return False
