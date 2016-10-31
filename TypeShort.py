@@ -55,16 +55,18 @@ class typeShortListener(sublime_plugin.EventListener):
     def on_modified(self, view):
         """ called after changes have been made to a view """
 
+        # no action if we are not typing
+        historyCmd = view.command_history(0)
+        if historyCmd[0] != 'insert':
+            return
+
         # fix the issue that breaks functionality for undo/soft_undo
         historyCmd = view.command_history(1)
         if historyCmd[0] == PLUGIN_CMD:
             return
 
-        # get the last press key
-        historyCmd = view.command_history(0)
-        if historyCmd[0] != 'insert':
-            return
-        lastInsertedStr = historyCmd[1]['characters']
+        # get the last inserted chars
+        lastInsertedChars = historyCmd[1]['characters']
 
         # collect scopes from the selection
         # we expect the fact that most regions would have the same scope
@@ -82,7 +84,7 @@ class typeShortListener(sublime_plugin.EventListener):
         # try possible working bindings
         for binding in settings.get('bindings', []):
             if sourceScopes & set(binding['syntax_list']):
-                success = self.doReplace(view, binding, lastInsertedStr)
+                success = self.doReplace(view, binding, lastInsertedChars)
                 if success is True:
                     return
 
@@ -112,14 +114,14 @@ class typeShortListener(sublime_plugin.EventListener):
         else:
             return None
 
-    def doReplace(self, view, binding, lastInsertedStr):
-        """ try to do replacement with given a binding and a last inserted char """
+    def doReplace(self, view, binding, lastInsertedChars):
+        """ try to do replacement with given a binding and last inserted chars """
 
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
             if not (
-                search.endswith(lastInsertedStr) or
-                lastInsertedStr.endswith(search)
+                search.endswith(lastInsertedChars) or
+                lastInsertedChars.endswith(search)
             ):
                 continue
             # iterate each region
