@@ -1,3 +1,9 @@
+TypeShort 1.3.5
+===============
+
+- Fix case problem introduced in `1.3.4` under non-Windows OS.
+
+
 TypeShort 1.3.4
 ===============
 
