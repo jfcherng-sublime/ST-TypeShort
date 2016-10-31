@@ -1,3 +1,9 @@
+TypeShort 1.3.6
+===============
+
+- Fix a bug introduced in `1.3.4`.
+
+
 TypeShort 1.3.5
 ===============
 
