@@ -27,7 +27,8 @@ Note that this plugin need you to set your own (`placeholder`, `replacement`) pa
 Settings
 ========
 
-Edit settings from the menu `Preferences » Package Settings » TypeShort » Settings - User`.
+This plugin do not have any default binding since it is very personal.
+To add a binding, edit settings from the menu `Preferences » Package Settings » TypeShort » Settings - User`.
 
 ## Example settings
 
@@ -90,3 +91,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+Supporters <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ATXYY9Y78EQ3Y" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" /></a>
+==========
+
+Thank you guys for sending me some cups of coffee.

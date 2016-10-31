@@ -2,7 +2,7 @@ import os
 import re
 import sublime
 import sublime_plugin
-from .functions import camelcaseToUnderscore
+from .Functions import camelcaseToUnderscore
 
 
 PLUGIN_NAME = __package__

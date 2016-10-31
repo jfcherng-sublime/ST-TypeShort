@@ -1,3 +1,9 @@
+TypeShort 1.3.4
+===============
+
+- Just some directory structure tweaks.
+
+
 TypeShort 1.3.3
 ===============
 
