@@ -55,16 +55,15 @@ class typeShortListener(sublime_plugin.EventListener):
     def on_modified(self, view):
         """ called after changes have been made to a view """
 
-        # no action if we are not typing
-        historyCmd = view.command_history(0)
-        if historyCmd[0] != 'insert':
-            return
-
         # fix the issue that breaks functionality for undo/soft_undo
         historyCmd = view.command_history(1)
         if historyCmd[0] == PLUGIN_CMD:
             return
 
+        # no action if we are not typing
+        historyCmd = view.command_history(0)
+        if historyCmd[0] != 'insert':
+            return
         # get the last inserted chars
         lastInsertedChars = historyCmd[1]['characters']
 
