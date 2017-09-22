@@ -1,3 +1,9 @@
+TypeShort 1.4.1
+===============
+
+- [Fix] Replacement does not work in a new view of a file.
+
+
 TypeShort 1.4.0
 ===============
 
