@@ -1,3 +1,9 @@
+TypeShort 1.4.0
+===============
+
+- [Feature] Allow specifying the new cursor position after a replacement.
+
+
 TypeShort 1.3.6
 ===============
 
