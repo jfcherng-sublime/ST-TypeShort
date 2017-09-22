@@ -39,18 +39,19 @@ class typeShortCommand(sublime_plugin.TextCommand):
         # validate the format of `replacement`
         if isinstance(cursorPlaceholder, str):
             cursorPlaceholderCount = replacement.count(cursorPlaceholder)
+
             # wrong usage
             if cursorPlaceholderCount > 1:
                 print('[{}] ERROR: More than one cursor placeholder in `{}`'.format(PLUGIN_NAME, replacement))
                 return False
+
             # correct usage
             if cursorPlaceholderCount == 1:
                 cursorFixedOffset = replacement.index(cursorPlaceholder) + len(cursorPlaceholder) - len(replacement)
                 replacement = replacement.replace(cursorPlaceholder, '', 1)
 
         # regions need to be replaced in a reversed sorted order
-        regions = self.reverseSortRegions(regions)
-        for region in regions:
+        for region in self.reverseSortRegions(regions):
             v.replace(
                 edit,
                 sublime.Region(region[0], region[1]),
@@ -73,8 +74,17 @@ class typeShortCommand(sublime_plugin.TextCommand):
                     cursorPositionFixed
                 ))
 
+        return True
+
     def reverseSortRegions(self, regions):
-        """ sort regions in a descending order """
+        """
+        sort `regions` in a descending order
+
+        @param      self     The object
+        @param      regions  A list of region which is in tuple form
+
+        @return     `regions` in a descending order.
+        """
 
         return sorted(regions, key=lambda region: region[0], reverse=True)
 
@@ -88,19 +98,26 @@ class typeShortListener(sublime_plugin.EventListener):
         self.nameYamlRegex = re.compile(r'^name\s*:(.*)$', re.MULTILINE)
 
     def on_modified(self, view):
-        """ called after changes have been made to a view """
+        """
+        called after changes have been made to a view
+
+        @param      self  The object
+        @param      view  The view
+
+        @return     True if a replacement happened, False otherwise.
+        """
 
         v = sublime.active_window().active_view()
 
         # fix the issue that breaks functionality for undo/soft_undo
         historyCmd = v.command_history(1)
         if historyCmd[0] == PLUGIN_CMD:
-            return
+            return False
 
         # no action if we are not typing
         historyCmd = v.command_history(0)
         if historyCmd[0] != 'insert':
-            return
+            return False
         # get the last inserted chars
         lastInsertedChars = historyCmd[1]['characters']
 
@@ -122,36 +139,71 @@ class typeShortListener(sublime_plugin.EventListener):
             if sourceScopes & set(binding['syntax_list']):
                 success = self.doReplace(v, binding, lastInsertedChars)
                 if success is True:
-                    return
+                    return True
+
+        return True
 
     def getCurrentSyntax(self, view):
-        """ get the syntax file name and the syntax name which is on the bottom-right corner of ST """
+        """
+        get the syntax file name and the syntax name which is on the
+        bottom-right corner of ST
+
+        @param      self  The object
+        @param      view  The view
+
+        @return     The current syntax.
+        """
 
         syntaxFile = view.settings().get('syntax')
+
         if syntaxFile not in syntaxInfos:
             syntaxInfos[syntaxFile] = {
-                'fileName'   : os.path.splitext(os.path.basename(syntaxFile))[0],
+                'fileName' : os.path.splitext(os.path.basename(syntaxFile))[0],
                 'syntaxName' : self.findSyntaxName(syntaxFile),
             }
-        return [v for v in syntaxInfos[syntaxFile].values() if isinstance(v, str)]
+
+        return [
+            v
+            for v in syntaxInfos[syntaxFile].values()
+            if isinstance(v, str)
+        ]
 
     def findSyntaxName(self, syntaxFile):
-        """ find the name section in the give syntax file path """
+        """
+        find the name section in the give syntax file path
+
+        @param      self        The object
+        @param      syntaxFile  The path of a syntax file
+
+        @return     The syntax name of `syntaxFile` or None.
+        """
 
         content = sublime.load_resource(syntaxFile).strip()
+
         # .tmLanguage (XML)
         if content.startswith('<'):
             matches = self.nameXmlRegex.search(content)
         # .sublime-syntax (YAML)
         else:
             matches = self.nameYamlRegex.search(content)
-        if matches is not None:
-            return matches.group(1).strip()
-        else:
+
+        if matches is None:
             return None
 
+        return matches.group(1).strip()
+
     def doReplace(self, view, binding, lastInsertedChars):
-        """ try to do replacement with given a binding and last inserted chars """
+        """
+        try to do replacement with given a binding and last inserted chars
+
+        @param      self               The object
+        @param      view               The view object
+        @param      binding            A binding in `bindings` in the settings
+                                       file
+        @param      lastInsertedChars  The last inserted characters
+
+        @return     True/False on success/failure.
+        """
 
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
@@ -160,8 +212,10 @@ class typeShortListener(sublime_plugin.EventListener):
                 lastInsertedChars.endswith(search)
             ):
                 continue
-            # iterate each region
+
             regionsToBeReplaced = []
+
+            # iterate each region
             for region in view.sel():
                 checkRegion = sublime.Region(
                     region.begin() - len(search),
@@ -172,10 +226,11 @@ class typeShortListener(sublime_plugin.EventListener):
                         checkRegion.begin(),
                         checkRegion.end()
                     ))
+
             if regionsToBeReplaced:
-                view.run_command(PLUGIN_CMD, {
+                return view.run_command(PLUGIN_CMD, {
                     'regions'     : regionsToBeReplaced,
                     'replacement' : replacement,
                 })
-                return True
-        return False
+
+        return True
