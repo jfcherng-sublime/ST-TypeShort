@@ -31,6 +31,8 @@ class typeShortCommand(sublime_plugin.TextCommand):
     global settings
 
     def run(self, edit, regions=[], replacement=''):
+        v = sublime.active_window().active_view()
+
         cursorPlaceholder = settings.get('cursor_placeholder', None)
         cursorFixedOffset = 0
 
@@ -49,7 +51,7 @@ class typeShortCommand(sublime_plugin.TextCommand):
         # regions need to be replaced in a reversed sorted order
         regions = self.reverseSortRegions(regions)
         for region in regions:
-            self.view.replace(
+            v.replace(
                 edit,
                 sublime.Region(region[0], region[1]),
                 replacement
@@ -57,7 +59,7 @@ class typeShortCommand(sublime_plugin.TextCommand):
 
             # correct cursor positions
             if cursorFixedOffset < 0:
-                sels = self.view.sel()
+                sels = v.sel()
                 # remove the old cursor
                 cursorPosition = region[0] + len(replacement)
                 sels.subtract(sublime.Region(
@@ -88,13 +90,15 @@ class typeShortListener(sublime_plugin.EventListener):
     def on_modified(self, view):
         """ called after changes have been made to a view """
 
+        v = sublime.active_window().active_view()
+
         # fix the issue that breaks functionality for undo/soft_undo
-        historyCmd = view.command_history(1)
+        historyCmd = v.command_history(1)
         if historyCmd[0] == PLUGIN_CMD:
             return
 
         # no action if we are not typing
-        historyCmd = view.command_history(0)
+        historyCmd = v.command_history(0)
         if historyCmd[0] != 'insert':
             return
         # get the last inserted chars
@@ -103,20 +107,20 @@ class typeShortListener(sublime_plugin.EventListener):
         # collect scopes from the selection
         # we expect the fact that most regions would have the same scope
         scopesInSeletion = {
-            view.scope_name(region.begin()).rstrip()
-            for region in view.sel()
+            v.scope_name(region.begin()).rstrip()
+            for region in v.sel()
         }
 
         # generate valid source scopes
         sourceScopes = (
-            set(self.getCurrentSyntax(view)) |
+            set(self.getCurrentSyntax(v)) |
             set(self.sourceScopeRegex.findall(' '.join(scopesInSeletion)))
         )
 
         # try possible working bindings
         for binding in settings.get('bindings', []):
             if sourceScopes & set(binding['syntax_list']):
-                success = self.doReplace(view, binding, lastInsertedChars)
+                success = self.doReplace(v, binding, lastInsertedChars)
                 if success is True:
                     return
 
