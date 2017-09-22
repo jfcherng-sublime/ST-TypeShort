@@ -37,11 +37,22 @@ To add a binding, edit settings from the menu `Preferences » Package Settings �
     // This file is an example settings.
     // You should write your own settings in "Preferences » Package Settings » TypeShort » Settings - User"
 
+    // the symbol used to represent the new cursor position after a replacement
+    "cursor_placeholder": "{|}",
+
     // You can alternatively use either syntax file name, syntax name or scopes in the "syntax_list".
     // - syntax file name: The syntax file name without extension.
     // - syntax name: It's package-dependent and as shown on the bottom-right corner of your ST windows.
     // - scope: ctrl+alt+shift+p shows it which is in the form of "source.xxx/text.xxx".
     "bindings": [
+        {
+            // convert 'cmt ' into '<!--  -->' and place the cursor at its mid
+            "keymaps": {
+                "cmt ": "<!-- {|} -->"
+            },
+            // only works in HTML
+            "syntax_list": ["text.html", "text.html.basic"]
+        },
         {
             // convert 'fj ' into '$'
             // convert 'dk ' into '->'

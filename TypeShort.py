@@ -28,7 +28,24 @@ def plugin_loaded():
 
 
 class typeShortCommand(sublime_plugin.TextCommand):
+    global settings
+
     def run(self, edit, regions=[], replacement=''):
+        cursorPlaceholder = settings.get('cursor_placeholder', None)
+        cursorFixedOffset = 0
+
+        # validate the format of `replacement`
+        if isinstance(cursorPlaceholder, str):
+            cursorPlaceholderCount = replacement.count(cursorPlaceholder)
+            # wrong usage
+            if cursorPlaceholderCount > 1:
+                print('[{}] ERROR: More than one cursor placeholder in `{}`'.format(PLUGIN_NAME, replacement))
+                return False
+            # correct usage
+            if cursorPlaceholderCount == 1:
+                cursorFixedOffset = replacement.index(cursorPlaceholder) + len(cursorPlaceholder) - len(replacement)
+                replacement = replacement.replace(cursorPlaceholder, '', 1)
+
         # regions need to be replaced in a reversed sorted order
         regions = self.reverseSortRegions(regions)
         for region in regions:
@@ -37,6 +54,22 @@ class typeShortCommand(sublime_plugin.TextCommand):
                 sublime.Region(region[0], region[1]),
                 replacement
             )
+
+            # correct cursor positions
+            if cursorFixedOffset < 0:
+                sels = self.view.sel()
+                # remove the old cursor
+                cursorPosition = region[0] + len(replacement)
+                sels.subtract(sublime.Region(
+                    cursorPosition,
+                    cursorPosition
+                ))
+                # add a new cursor
+                cursorPositionFixed = cursorPosition + cursorFixedOffset
+                sels.add(sublime.Region(
+                    cursorPositionFixed,
+                    cursorPositionFixed
+                ))
 
     def reverseSortRegions(self, regions):
         """ sort regions in a descending order """
