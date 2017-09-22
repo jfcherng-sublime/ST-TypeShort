@@ -49,7 +49,7 @@ To add a binding, edit settings from the menu `Preferences Â» Package Settings Â
                 "fj ": "$",
                 "dk ": "->"
             },
-            // only work in PHP
+            // only works in PHP
             "syntax_list": ["source.php"]
         },
         {
@@ -59,7 +59,7 @@ To add a binding, edit settings from the menu `Preferences Â» Package Settings Â
                 "fj ": "*",
                 "dk ": "->"
             },
-            // only work in C/C++
+            // only works in C/C++
             "syntax_list": ["source.c", "source.c++", "source.c++11"]
         }
     ]
