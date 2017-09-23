@@ -1,53 +1,47 @@
-TypeShort 1.4.1
-===============
+# TypeShort
+
+
+## 1.4.1
 
 - [Fix] Replacement does not work in a new view of a file.
 
 
-TypeShort 1.4.0
-===============
+## 1.4.0
 
 - [Feature] Allow specifying the new cursor position after a replacement.
 
 
-TypeShort 1.3.6
-===============
+## 1.3.6
 
 - Fix a bug introduced in `1.3.4`.
 
 
-TypeShort 1.3.5
-===============
+## 1.3.5
 
 - Fix case problem introduced in `1.3.4` under non-Windows OS.
 
 
-TypeShort 1.3.4
-===============
+## 1.3.4
 
 - Just some directory structure tweaks.
 
 
-TypeShort 1.3.3
-===============
+## 1.3.3
 
 - Fix `historyEntry['characters']` may be longer than a single character. (SirNickolas)
 
 
-TypeShort 1.3.2
-===============
+## 1.3.2
 
 - Minor performance improvement.
 
 
-TypeShort 1.3.1
-===============
+## 1.3.1
 
 - Minor performance improvement.
 
 
-TypeShort 1.3.0
-===============
+## 1.3.0
 
 - Syntax name can be used in `syntax_list` now.
 
@@ -57,28 +51,24 @@ TypeShort 1.3.0
   the `syntax_list`.
 
 
-TypeShort 1.2.1
-===============
+## 1.2.1
 
 - Fix a regex typo.
 
 
-TypeShort 1.2.0
-===============
+## 1.2.0
 
 - Performance improvement for multiple cursors.
 - Better undo/soft_undo behavior.
 - Remove the `debug` option introduced in v1.1.1 since `ctrl+alt+shift+p` does it.
 
 
-TypeShort 1.1.2
-===============
+## 1.1.2
 
 - Fix a typo in `messages.json`.
 
 
-TypeShort 1.1.1
-===============
+## 1.1.1
 
 - Add `debug` options.
 
@@ -91,8 +81,7 @@ TypeShort 1.1.1
   `text.blade`.
 
 
-TypeShort 1.1.0
-===============
+## 1.1.0
 
 - Scopes can be used in `syntax_list` as well. (#1)
 
@@ -104,7 +93,6 @@ TypeShort 1.1.0
             You may check it with a plugin like `ScopeAlways` or `ScopeHunter`.
 
 
-TypeShort 1.0.0
-===============
+## 1.0.0
 
 - Initial release
