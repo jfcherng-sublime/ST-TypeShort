@@ -123,7 +123,7 @@ class typeShortListener(sublime_plugin.EventListener):
 
         # collect scopes from the selection
         # we expect the fact that most regions would have the same scope
-        scopesInSeletion = {
+        scopesInSelection = {
             v.scope_name(region.begin()).rstrip()
             for region in v.sel()
         }
@@ -131,7 +131,7 @@ class typeShortListener(sublime_plugin.EventListener):
         # generate valid source scopes
         sourceScopes = (
             set(self.getCurrentSyntax(v)) |
-            set(self.sourceScopeRegex.findall(' '.join(scopesInSeletion)))
+            set(self.sourceScopeRegex.findall(' '.join(scopesInSelection)))
         )
 
         # try possible working bindings
@@ -141,7 +141,7 @@ class typeShortListener(sublime_plugin.EventListener):
                 if success is True:
                     return True
 
-        return True
+        return False
 
     def getCurrentSyntax(self, view):
         """
@@ -158,8 +158,8 @@ class typeShortListener(sublime_plugin.EventListener):
 
         if syntaxFile not in syntaxInfos:
             syntaxInfos[syntaxFile] = {
-                'fileName' : os.path.splitext(os.path.basename(syntaxFile))[0],
-                'syntaxName' : self.findSyntaxName(syntaxFile),
+                'fileName': os.path.splitext(os.path.basename(syntaxFile))[0],
+                'syntaxName': self.findSyntaxName(syntaxFile),
             }
 
         return [
@@ -229,8 +229,8 @@ class typeShortListener(sublime_plugin.EventListener):
 
             if regionsToBeReplaced:
                 return view.run_command(PLUGIN_CMD, {
-                    'regions'     : regionsToBeReplaced,
-                    'replacement' : replacement,
+                    'regions': regionsToBeReplaced,
+                    'replacement': replacement,
                 })
 
         return True
