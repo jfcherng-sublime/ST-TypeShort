@@ -1,14 +1,14 @@
+from . import functions
 import os
 import re
 import sublime
 import sublime_plugin
-from .Functions import camelcaseToUnderscore
 
 
 PLUGIN_NAME = __package__
 PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
 PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
-PLUGIN_CMD = camelcaseToUnderscore(PLUGIN_NAME)
+PLUGIN_CMD = functions.camelToSnake(PLUGIN_NAME)
 
 settings = None
 
