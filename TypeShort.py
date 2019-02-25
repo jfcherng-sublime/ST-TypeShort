@@ -7,51 +7,49 @@ import sublime_plugin
 
 PLUGIN_NAME = __package__
 PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
-PLUGIN_SETTINGS = PLUGIN_NAME + '.sublime-settings'
-PLUGIN_CMD = functions.camelToSnake(PLUGIN_NAME)
+PLUGIN_SETTINGS = '%s.sublime-settings' % PLUGIN_NAME
+PLUGIN_CMD = functions.camel_to_snake(PLUGIN_NAME)
 
-settings = None
 
+# Just a static cache.
+#
 # {
-#     syntaxFile: {
-#         'fileName'  : '...',
-#         'syntaxName': '...',
+#     syntax_file: {
+#         'file_name': '...',
+#         'syntax_name': '...',
 #     }
 # }
-syntaxInfos = {}
-
-
-def plugin_loaded():
-    global settings
-
-    settings = sublime.load_settings(PLUGIN_SETTINGS)
+syntax_infos = {}
 
 
 class typeShortCommand(sublime_plugin.TextCommand):
-    global settings
-
     def run(self, edit, regions=[], replacement=''):
-        v = sublime.active_window().active_view()
+        settings = sublime.load_settings(PLUGIN_SETTINGS)
+        v = self.view
 
-        cursorPlaceholder = settings.get('cursor_placeholder', None)
-        cursorFixedOffset = 0
+        cursor_placeholder = settings.get('cursor_placeholder', None)
+        cursor_fixed_offset = 0
 
         # validate the format of `replacement`
-        if isinstance(cursorPlaceholder, str):
-            cursorPlaceholderCount = replacement.count(cursorPlaceholder)
+        if isinstance(cursor_placeholder, str):
+            cursor_placeholder_count = replacement.count(cursor_placeholder)
 
             # wrong usage
-            if cursorPlaceholderCount > 1:
+            if cursor_placeholder_count > 1:
                 print('[{}] ERROR: More than one cursor placeholder in `{}`'.format(PLUGIN_NAME, replacement))
                 return False
 
             # correct usage
-            if cursorPlaceholderCount == 1:
-                cursorFixedOffset = replacement.index(cursorPlaceholder) + len(cursorPlaceholder) - len(replacement)
-                replacement = replacement.replace(cursorPlaceholder, '', 1)
+            if cursor_placeholder_count == 1:
+                cursor_fixed_offset = (
+                    replacement.index(cursor_placeholder)
+                    + len(cursor_placeholder)
+                    - len(replacement)
+                )
+                replacement = replacement.replace(cursor_placeholder, '', 1)
 
         # regions need to be replaced in a reversed sorted order
-        for region in self.reverseSortRegions(regions):
+        for region in self.reverse_sort_regions(regions):
             v.replace(
                 edit,
                 sublime.Region(region[0], region[1]),
@@ -59,177 +57,180 @@ class typeShortCommand(sublime_plugin.TextCommand):
             )
 
             # correct cursor positions
-            if cursorFixedOffset < 0:
+            if cursor_fixed_offset < 0:
                 sels = v.sel()
                 # remove the old cursor
-                cursorPosition = region[0] + len(replacement)
+                cursor_position = region[0] + len(replacement)
                 sels.subtract(sublime.Region(
-                    cursorPosition,
-                    cursorPosition
+                    cursor_position,
+                    cursor_position
                 ))
                 # add a new cursor
-                cursorPositionFixed = cursorPosition + cursorFixedOffset
+                cursor_position_fixed = cursor_position + cursor_fixed_offset
                 sels.add(sublime.Region(
-                    cursorPositionFixed,
-                    cursorPositionFixed
+                    cursor_position_fixed,
+                    cursor_position_fixed
                 ))
 
         return True
 
-    def reverseSortRegions(self, regions):
+    def reverse_sort_regions(self, regions):
         """
         sort `regions` in a descending order
 
-        @param      self     The object
-        @param      regions  A list of region which is in tuple form
+        @param self    The object
+        @param regions A list of region which is in tuple form
 
-        @return     `regions` in a descending order.
+        @return `regions` in a descending order.
         """
 
         return sorted(regions, key=lambda region: region[0], reverse=True)
 
 
 class typeShortListener(sublime_plugin.EventListener):
-    global settings, syntaxInfos
-
     def __init__(self):
-        self.sourceScopeRegex = re.compile(r'\b(?:source|text)\.[^\s]+')
-        self.nameXmlRegex = re.compile(r'<key>name</key>\s*<string>(.*?)</string>', re.DOTALL)
-        self.nameYamlRegex = re.compile(r'^name\s*:(.*)$', re.MULTILINE)
+        self.source_scope_regex = re.compile(r'\b(?:source|text)\.[^\s]+')
+        self.name_xml_regex = re.compile(r'<key>name</key>\s*<string>(.*?)</string>', re.DOTALL)
+        self.name_yaml_regex = re.compile(r'^name\s*:(.*)$', re.MULTILINE)
 
     def on_modified(self, view):
         """
         called after changes have been made to a view
 
-        @param      self  The object
-        @param      view  The view
+        @param self The object
+        @param view The view
 
-        @return     True if a replacement happened, False otherwise.
+        @return True if a replacement happened, False otherwise.
         """
 
-        v = sublime.active_window().active_view()
+        settings = sublime.load_settings(PLUGIN_SETTINGS)
+        v = view
 
         # fix the issue that breaks functionality for undo/soft_undo
-        historyCmd = v.command_history(1)
-        if historyCmd[0] == PLUGIN_CMD:
+        history_cmd = v.command_history(1)
+        if history_cmd[0] == PLUGIN_CMD:
             return False
 
         # no action if we are not typing
-        historyCmd = v.command_history(0)
-        if historyCmd[0] != 'insert':
+        history_cmd = v.command_history(0)
+        if history_cmd[0] != 'insert':
             return False
         # get the last inserted chars
-        lastInsertedChars = historyCmd[1]['characters']
+        last_inserted_chars = history_cmd[1]['characters']
 
         # collect scopes from the selection
         # we expect the fact that most regions would have the same scope
-        scopesInSelection = {
+        scopes_in_selection = {
             v.scope_name(region.begin()).rstrip()
             for region in v.sel()
         }
 
         # generate valid source scopes
-        sourceScopes = (
-            set(self.getCurrentSyntax(v)) |
-            set(self.sourceScopeRegex.findall(' '.join(scopesInSelection)))
+        source_scopes = (
+            set(self.get_current_syntax(v))
+            | set(self.source_scope_regex.findall(' '.join(scopes_in_selection)))
         )
 
         # try possible working bindings
         for binding in settings.get('bindings', []):
-            if sourceScopes & set(binding['syntax_list']):
-                success = self.doReplace(v, binding, lastInsertedChars)
+            if source_scopes & set(binding['syntax_list']):
+                success = self.do_replace(v, binding, last_inserted_chars)
+
                 if success is True:
                     return True
 
         return False
 
-    def getCurrentSyntax(self, view):
+    def get_current_syntax(self, view):
         """
         get the syntax file name and the syntax name which is on the
         bottom-right corner of ST
 
-        @param      self  The object
-        @param      view  The view
+        @param self The object
+        @param view The view
 
-        @return     The current syntax.
+        @return The current syntax.
         """
 
-        syntaxFile = view.settings().get('syntax')
+        global syntax_infos
 
-        if syntaxFile not in syntaxInfos:
-            syntaxInfos[syntaxFile] = {
-                'fileName': os.path.splitext(os.path.basename(syntaxFile))[0],
-                'syntaxName': self.findSyntaxName(syntaxFile),
+        syntax_file = view.settings().get('syntax')
+
+        if syntax_file not in syntax_infos:
+            syntax_infos[syntax_file] = {
+                'file_name': os.path.splitext(os.path.basename(syntax_file))[0],
+                'syntax_name': self.find_syntax_name(syntax_file),
             }
 
         return [
-            v
-            for v in syntaxInfos[syntaxFile].values()
-            if isinstance(v, str)
+            value
+            for value in syntax_infos[syntax_file].values()
+            if isinstance(value, str)
         ]
 
-    def findSyntaxName(self, syntaxFile):
+    def find_syntax_name(self, syntax_file):
         """
         find the name section in the give syntax file path
 
-        @param      self        The object
-        @param      syntaxFile  The path of a syntax file
+        @param self        The object
+        @param syntax_file The path of a syntax file
 
-        @return     The syntax name of `syntaxFile` or None.
+        @return The syntax name of `syntax_file` or None.
         """
 
-        content = sublime.load_resource(syntaxFile).strip()
+        content = sublime.load_resource(syntax_file).strip()
 
         # .tmLanguage (XML)
         if content.startswith('<'):
-            matches = self.nameXmlRegex.search(content)
+            matches = self.name_xml_regex.search(content)
         # .sublime-syntax (YAML)
         else:
-            matches = self.nameYamlRegex.search(content)
+            matches = self.name_yaml_regex.search(content)
 
         if matches is None:
             return None
 
         return matches.group(1).strip()
 
-    def doReplace(self, view, binding, lastInsertedChars):
+    def do_replace(self, view, binding, last_inserted_chars):
         """
         try to do replacement with given a binding and last inserted chars
 
-        @param      self               The object
-        @param      view               The view object
-        @param      binding            A binding in `bindings` in the settings
-                                       file
-        @param      lastInsertedChars  The last inserted characters
+        @param self                The object
+        @param view                The view object
+        @param binding             A binding in `bindings` in the settings file
+        @param last_inserted_chars The last inserted characters
 
-        @return     True/False on success/failure.
+        @return True/False on success/failure.
         """
+
+        v = view
 
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
             if not (
-                search.endswith(lastInsertedChars) or
-                lastInsertedChars.endswith(search)
+                search.endswith(last_inserted_chars)
+                or last_inserted_chars.endswith(search)
             ):
                 continue
 
-            regionsToBeReplaced = []
+            regions_to_be_replaced = []
 
             # iterate each region
-            for region in view.sel():
-                checkRegion = sublime.Region(
+            for region in v.sel():
+                check_region = sublime.Region(
                     region.begin() - len(search),
                     region.end()
                 )
-                if view.substr(checkRegion) == search:
-                    regionsToBeReplaced.append((
-                        checkRegion.begin(),
-                        checkRegion.end()
+                if v.substr(check_region) == search:
+                    regions_to_be_replaced.append((
+                        check_region.begin(),
+                        check_region.end()
                     ))
 
-            if regionsToBeReplaced:
-                return view.run_command(PLUGIN_CMD, {
-                    'regions': regionsToBeReplaced,
+            if regions_to_be_replaced:
+                return v.run_command(PLUGIN_CMD, {
+                    'regions': regions_to_be_replaced,
                     'replacement': replacement,
                 })
 
