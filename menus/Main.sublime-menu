@@ -1,43 +1,36 @@
 [{
     "caption": "Preferences",
-    "mnemonic": "n",
     "id": "preferences",
     "children": [{
         "caption": "Package Settings",
-        "mnemonic": "P",
         "id": "package-settings",
         "children": [{
             "caption": "TypeShort",
             "children": [{
-                "caption": "-"
+                "caption": "-",
             }, {
-                "command": "open_file",
-                "caption": "Settings – Default",
+                "caption": "Settings",
+                "command": "edit_settings",
                 "args": {
-                    "file": "${packages}/TypeShort/TypeShort.sublime-settings"
-                }
+                    "base_file": "${packages}/TypeShort/TypeShort.sublime-settings",
+                    "default": "{\n\t$0\n}\n",
+                },
             }, {
-                "command": "open_file",
-                "caption": "Settings – User",
-                "args": {
-                    "file": "${packages}/User/TypeShort.sublime-settings"
-                }
-            }, {
-                "caption": "-"
+                "caption": "-",
             }, {
                 "caption": "README",
                 "command": "open_file",
                 "args": {
-                    "file": "${packages}/TypeShort/README.md"
-                }
+                    "file": "${packages}/TypeShort/README.md",
+                },
             }, {
                 "caption": "Changelog",
                 "command": "open_file",
                 "args": {
-                    "file": "${packages}/TypeShort/CHANGELOG.md"
-                }
+                    "file": "${packages}/TypeShort/CHANGELOG.md",
+                },
             }, {
-                "caption": "-"
+                "caption": "-",
             }]
         }]
     }]
