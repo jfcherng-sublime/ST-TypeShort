@@ -1,5 +1,5 @@
-TypeShort
-=========
+Sublime-TypeShort
+=================
 
 TypeShort is a snippet-like plugin for Sublime Text 3.
 The original idea comes from [VvPhpDollar](https://github.com/ZhaonanLi/VvPhpDollar) by [ZhaonanLi](https://github.com/ZhaonanLi).
@@ -12,9 +12,10 @@ Usage
 ![](https://raw.githubusercontent.com/jfcherng/sublime-TypeShort/gh-pages/images/screenshot.gif)
 
 For example, typing a `$` or a `->` in PHP may be just not that comfortable.
-You can set `fj_` (`_` represents a space here for better visibility) as a placeholder for `$` in PHP.
+You can set `fj_` (`_` represents a `space` here just for visibility) as a placeholder for `$` in PHP.
 This plugin will automatically replace `fj_` with `$` in PHP whenever you type it.
-Although `fj_` has three characters, it could be typed faster than a `$` due to the keyboard layout.
+Although `fj_` is 3-char, it could be typed faster than a `$` due to the normal keyboard layout.
+You could also set `dk_` as a placeholder for `->` as well for the same reason.
 
 
 Installation
@@ -28,7 +29,8 @@ Settings
 ========
 
 This plugin do not have any default binding since it is very personal.
-To add a binding, edit settings from the menu `Preferences » Package Settings » TypeShort » Settings - User`.
+To add a binding, edit settings from the menu `Preferences » Package Settings » TypeShort » Settings`.
+
 
 ## Example settings
 
