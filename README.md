@@ -6,13 +6,16 @@ The original idea comes from [VvPhpDollar](https://github.com/ZhaonanLi/VvPhpDol
 It will replace placeholders into corresponding replacements in real-time while typing.
 
 
-Usage
-=====
+Why This Plugin?
+================
 
-![](https://raw.githubusercontent.com/jfcherng/sublime-TypeShort/gh-pages/images/screenshot.gif)
+Do you ever consider `$`, `->`, `*`, `&`, etc to be uncomfortable to type?
+Typing them usually requires you to move your fingers farther.
 
-For example, typing a `$` or a `->` in PHP may be just not that comfortable.
-You can set `fj_` (`_` represents a `space` here just for visibility) as a placeholder for `$` in PHP.
+![screenshot](https://raw.githubusercontent.com/jfcherng/sublime-TypeShort/gh-pages/images/screenshot.gif)
+
+Take the screenshot above as an example, you can set `fj_` 
+(`_` represents a `space` here just for visibility) as a placeholder for `$` in PHP.
 This plugin will automatically replace `fj_` with `$` in PHP whenever you type it.
 Although `fj_` is 3-char, it could be typed faster than a `$` due to the normal keyboard layout.
 You could also set `dk_` as a placeholder for `->` as well for the same reason.
@@ -28,7 +31,7 @@ Note that this plugin need you to set your own (`placeholder`, `replacement`) pa
 Settings
 ========
 
-This plugin do not have any default binding since it is very personal.
+This plugin does not have any default binding since it is very personal.
 To add a binding, edit settings from the menu `Preferences » Package Settings » TypeShort » Settings`.
 
 
