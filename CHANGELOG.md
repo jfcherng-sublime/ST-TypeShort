@@ -1,6 +1,11 @@
 # TypeShort
 
 
+## 1.4.3
+
+- [Fix] Replacement does not work in a new view of a file again.
+
+
 ## 1.4.2
 
 - Use a new side-by-side window to edit settings.
