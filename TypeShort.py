@@ -25,7 +25,7 @@ syntax_infos = {}
 class typeShortCommand(sublime_plugin.TextCommand):
     def run(self, edit, regions=[], replacement=''):
         settings = sublime.load_settings(PLUGIN_SETTINGS)
-        v = self.view
+        v = sublime.active_window().active_view()
 
         cursor_placeholder = settings.get('cursor_placeholder', None)
         cursor_fixed_offset = 0
@@ -104,7 +104,7 @@ class typeShortListener(sublime_plugin.EventListener):
         """
 
         settings = sublime.load_settings(PLUGIN_SETTINGS)
-        v = view
+        v = sublime.active_window().active_view()
 
         # fix the issue that breaks functionality for undo/soft_undo
         history_cmd = v.command_history(1)
@@ -204,8 +204,6 @@ class typeShortListener(sublime_plugin.EventListener):
         @return True/False on success/failure.
         """
 
-        v = view
-
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
             if not (
@@ -217,19 +215,19 @@ class typeShortListener(sublime_plugin.EventListener):
             regions_to_be_replaced = []
 
             # iterate each region
-            for region in v.sel():
+            for region in view.sel():
                 check_region = sublime.Region(
                     region.begin() - len(search),
                     region.end()
                 )
-                if v.substr(check_region) == search:
+                if view.substr(check_region) == search:
                     regions_to_be_replaced.append((
                         check_region.begin(),
                         check_region.end()
                     ))
 
             if regions_to_be_replaced:
-                return v.run_command(PLUGIN_CMD, {
+                return view.run_command(PLUGIN_CMD, {
                     'regions': regions_to_be_replaced,
                     'replacement': replacement,
                 })
