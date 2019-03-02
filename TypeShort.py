@@ -23,75 +23,64 @@ syntax_infos = {}
 
 
 class typeShortCommand(sublime_plugin.TextCommand):
-    def run(self, edit, regions=[], replacement=''):
-        settings = sublime.load_settings(PLUGIN_SETTINGS)
+    def run(self, edit, regions=[], replacement='', cursor_placeholder=''):
         v = sublime.active_window().active_view()
 
-        cursor_placeholder = settings.get('cursor_placeholder', None)
+        cursor_placeholder_len = len(cursor_placeholder)
         cursor_fixed_offset = 0
 
-        # validate the format of `replacement`
-        if isinstance(cursor_placeholder, str):
+        # adjustments about the cursor placeholder
+        if cursor_placeholder_len > 0:
             cursor_placeholder_count = replacement.count(cursor_placeholder)
 
             # wrong usage
             if cursor_placeholder_count > 1:
                 print('[{}] ERROR: More than one cursor placeholder in `{}`'.format(PLUGIN_NAME, replacement))
+
                 return False
 
             # correct usage
             if cursor_placeholder_count == 1:
                 cursor_fixed_offset = (
                     replacement.index(cursor_placeholder)
-                    + len(cursor_placeholder)
+                    + cursor_placeholder_len
                     - len(replacement)
                 )
                 replacement = replacement.replace(cursor_placeholder, '', 1)
 
         # regions need to be replaced in a reversed sorted order
-        for region in self.reverse_sort_regions(regions):
+        for region in sorted(regions, reverse=True):
             v.replace(
                 edit,
-                sublime.Region(region[0], region[1]),
+                sublime.Region(*region),
                 replacement
             )
 
             # correct cursor positions
             if cursor_fixed_offset < 0:
                 sels = v.sel()
+
                 # remove the old cursor
                 cursor_position = region[0] + len(replacement)
                 sels.subtract(sublime.Region(
                     cursor_position,
-                    cursor_position
+                    cursor_position,
                 ))
+
                 # add a new cursor
                 cursor_position_fixed = cursor_position + cursor_fixed_offset
                 sels.add(sublime.Region(
                     cursor_position_fixed,
-                    cursor_position_fixed
+                    cursor_position_fixed,
                 ))
 
         return True
 
-    def reverse_sort_regions(self, regions):
-        """
-        sort `regions` in a descending order
-
-        @param self    The object
-        @param regions A list of region which is in tuple form
-
-        @return `regions` in a descending order.
-        """
-
-        return sorted(regions, key=lambda region: region[0], reverse=True)
-
 
 class typeShortListener(sublime_plugin.EventListener):
-    def __init__(self):
-        self.source_scope_regex = re.compile(r'\b(?:source|text)\.[^\s]+')
-        self.name_xml_regex = re.compile(r'<key>name</key>\s*<string>(.*?)</string>', re.DOTALL)
-        self.name_yaml_regex = re.compile(r'^name\s*:(.*)$', re.MULTILINE)
+    source_scope_regex = re.compile(r'\b(?:source|text)\.[^\s]+')
+    name_xml_regex = re.compile(r'<key>name</key>\s*<string>(?P<name>.*?)</string>', re.DOTALL)
+    name_yaml_regex = re.compile(r'^name\s*:(?P<name>.*)$', re.MULTILINE)
 
     def on_modified(self, view):
         """
@@ -99,8 +88,6 @@ class typeShortListener(sublime_plugin.EventListener):
 
         @param self The object
         @param view The view
-
-        @return True if a replacement happened, False otherwise.
         """
 
         settings = sublime.load_settings(PLUGIN_SETTINGS)
@@ -109,13 +96,15 @@ class typeShortListener(sublime_plugin.EventListener):
         # fix the issue that breaks functionality for undo/soft_undo
         history_cmd = v.command_history(1)
         if history_cmd[0] == PLUGIN_CMD:
-            return False
+            return
 
         # no action if we are not typing
         history_cmd = v.command_history(0)
         if history_cmd[0] != 'insert':
-            return False
+            return
+
         # get the last inserted chars
+        # this could be more than one char sometimes somehow
         last_inserted_chars = history_cmd[1]['characters']
 
         # collect scopes from the selection
@@ -133,13 +122,11 @@ class typeShortListener(sublime_plugin.EventListener):
 
         # try possible working bindings
         for binding in settings.get('bindings', []):
-            if source_scopes & set(binding['syntax_list']):
-                success = self.do_replace(v, binding, last_inserted_chars)
-
-                if success is True:
-                    return True
-
-        return False
+            if (
+                source_scopes & set(binding['syntax_list'])
+                and self.do_replace(v, binding, last_inserted_chars)
+            ):
+                return
 
     def get_current_syntax(self, view):
         """
@@ -187,10 +174,7 @@ class typeShortListener(sublime_plugin.EventListener):
         else:
             matches = self.name_yaml_regex.search(content)
 
-        if matches is None:
-            return None
-
-        return matches.group(1).strip()
+        return None if matches is None else matches.group('name').strip()
 
     def do_replace(self, view, binding, last_inserted_chars):
         """
@@ -203,6 +187,8 @@ class typeShortListener(sublime_plugin.EventListener):
 
         @return True/False on success/failure.
         """
+
+        settings = sublime.load_settings(PLUGIN_SETTINGS)
 
         for search, replacement in binding['keymaps'].items():
             # skip a keymap as early as possible
@@ -218,18 +204,20 @@ class typeShortListener(sublime_plugin.EventListener):
             for region in view.sel():
                 check_region = sublime.Region(
                     region.begin() - len(search),
-                    region.end()
+                    region.end(),
                 )
+
                 if view.substr(check_region) == search:
                     regions_to_be_replaced.append((
                         check_region.begin(),
-                        check_region.end()
+                        check_region.end(),
                     ))
 
             if regions_to_be_replaced:
                 return view.run_command(PLUGIN_CMD, {
                     'regions': regions_to_be_replaced,
                     'replacement': replacement,
+                    'cursor_placeholder': settings.get('cursor_placeholder', ''),
                 })
 
-        return True
+        return False
