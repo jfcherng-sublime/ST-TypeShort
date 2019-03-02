@@ -14,11 +14,11 @@ Typing them usually requires you to move your fingers farther.
 
 ![screenshot](https://raw.githubusercontent.com/jfcherng/sublime-TypeShort/gh-pages/images/screenshot.gif)
 
-Take the screenshot above as an example, you can set `fj_` 
-(`_` represents a `space` here just for visibility) as a placeholder for `$` in PHP.
-This plugin will automatically replace `fj_` with `$` in PHP whenever you type it.
-Although `fj_` is 3-char, it could be typed faster than a `$` due to the normal keyboard layout.
-You could also set `dk_` as a placeholder for `->` as well for the same reason.
+Take the screenshot above as an example, you can set `fj🔥` 
+(`🔥` represents a <kbd>space</kbd> here just for visibility) as a placeholder for `$` in PHP.
+This plugin will automatically replace `fj🔥` with `$` in PHP whenever you type it.
+Although `fj🔥` is 3-char, it could be typed faster than a `$` due to the normal keyboard layout.
+You could also set `dk🔥` as a placeholder for `->` as well for the same reason.
 
 
 Installation
