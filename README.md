@@ -17,8 +17,8 @@ Typing them usually requires you to move your fingers farther.
 Take the screenshot above as an example, you can set `fj🔥` 
 (`🔥` represents a <kbd>space</kbd> here just for visibility) as a placeholder for `$` in PHP.
 This plugin will automatically replace `fj🔥` with `$` in PHP whenever you type it.
-Although `fj🔥` is 3-char, it could be typed faster than a `$` due to the normal keyboard layout.
-You could also set `dk🔥` as a placeholder for `->` as well for the same reason.
+Although `fj🔥` is 3-char, it could be typed faster than a single `$` due to QWERTY keyboard layout.
+You may also set `dk🔥` (or other rarely used combinations) as a placeholder for `->` as well for the same reason.
 
 
 Installation
