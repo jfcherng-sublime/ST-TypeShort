@@ -1,7 +1,7 @@
 TypeShort has been updated. To see the changelog, visit
-Preferences » Package Settings » TypeShort » Changelog
+Preferences » Package Settings » TypeShort » CHANGELOG
 
 
-## 1.4.3
+## 1.4.4
 
-- [Fix] Replacement does not work in a new view of a file again.
+- Just some refactors.

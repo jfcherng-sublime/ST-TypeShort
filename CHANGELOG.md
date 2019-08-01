@@ -1,6 +1,11 @@
 # TypeShort
 
 
+## 1.4.4
+
+- Just some refactors.
+
+
 ## 1.4.3
 
 - [Fix] Replacement does not work in a new view of a file again.

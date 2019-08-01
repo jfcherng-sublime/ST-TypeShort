@@ -24,7 +24,7 @@
                     "file": "${packages}/TypeShort/README.md",
                 },
             }, {
-                "caption": "Changelog",
+                "caption": "CHANGELOG",
                 "command": "open_file",
                 "args": {
                     "file": "${packages}/TypeShort/CHANGELOG.md",
