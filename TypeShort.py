@@ -2,23 +2,9 @@ import os
 import re
 import sublime
 import sublime_plugin
-from .functions import camel_to_snake
-
-PLUGIN_NAME = __package__
-PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
-PLUGIN_SETTINGS = "%s.sublime-settings" % PLUGIN_NAME
-PLUGIN_CMD = camel_to_snake(PLUGIN_NAME)
-
-
-# Just a static cache.
-#
-# {
-#     syntax_file: {
-#         'file_name': '...',
-#         'syntax_name': '...',
-#     }
-# }
-syntax_infos = {}
+from .functions import camel_to_snake, msg
+from .Globals import Globals
+from .settings import get_package_name, get_setting
 
 
 class typeShortCommand(sublime_plugin.TextCommand):
@@ -27,7 +13,7 @@ class typeShortCommand(sublime_plugin.TextCommand):
         edit: sublime.Edit,
         regions: list = [],
         replacement: str = "",
-        cursor_placeholder: str = "",
+        cursor_placeholder: str = "{|}",
     ) -> bool:
         v = sublime.active_window().active_view()
 
@@ -40,11 +26,7 @@ class typeShortCommand(sublime_plugin.TextCommand):
 
             # wrong usage
             if cursor_placeholder_count > 1:
-                print(
-                    "[{}] ERROR: More than one cursor placeholder in `{}`".format(
-                        PLUGIN_NAME, replacement
-                    )
-                )
+                msg("ERROR: More than one cursor placeholder in `{}`".format(replacement))
 
                 return False
 
@@ -77,6 +59,8 @@ class typeShortCommand(sublime_plugin.TextCommand):
 
 
 class typeShortListener(sublime_plugin.EventListener):
+    plugin_cmd = camel_to_snake(get_package_name())
+
     source_scope_regex = re.compile(r"\b(?:source|text)\.[^\s]+")
     name_xml_regex = re.compile(r"<key>name</key>\s*<string>(?P<name>.*?)</string>", re.DOTALL)
     name_yaml_regex = re.compile(r"^name\s*:(?P<name>.*)$", re.MULTILINE)
@@ -89,12 +73,11 @@ class typeShortListener(sublime_plugin.EventListener):
         @param view The view
         """
 
-        settings = sublime.load_settings(PLUGIN_SETTINGS)
         v = sublime.active_window().active_view()
 
         # fix the issue that breaks functionality for undo/soft_undo
         history_cmd = v.command_history(1)
-        if history_cmd[0] == PLUGIN_CMD:
+        if history_cmd[0] == self.plugin_cmd:
             return
 
         # no action if we are not typing
@@ -116,15 +99,15 @@ class typeShortListener(sublime_plugin.EventListener):
         )
 
         # try possible working bindings
-        for binding in settings.get("bindings", []):
-            if source_scopes & set(binding["syntax_list"]) and self.do_replace(
+        for binding in get_setting("bindings"):
+            if source_scopes & set(binding["syntax_list"]) and self._do_replace(
                 v, binding, last_inserted_chars
             ):
                 return
 
     def get_current_syntax(self, view: sublime.View) -> list:
         """
-        get the syntax file name and the syntax name which is on the
+        get the syntax file name and the syntax name which is displayed on the
         bottom-right corner of ST
 
         @param self The object
@@ -133,19 +116,25 @@ class typeShortListener(sublime_plugin.EventListener):
         @return The current syntax.
         """
 
-        global syntax_infos
-
         syntax_file = view.settings().get("syntax")
 
-        if syntax_file not in syntax_infos:
-            syntax_infos[syntax_file] = {
+        if syntax_file not in Globals.syntax_infos:
+            Globals.syntax_infos[syntax_file] = {
+                # the syntax file name without an extension
                 "file_name": os.path.splitext(os.path.basename(syntax_file))[0],
-                "syntax_name": self.find_syntax_name(syntax_file),
+                # the syntax name displayed on the bottom-right corner of ST
+                "syntax_name": self._find_syntax_name(syntax_file),
             }
 
-        return [value for value in syntax_infos[syntax_file].values() if isinstance(value, str)]
+        return [
+            # fmt: off
+            value
+            for value in Globals.syntax_infos[syntax_file].values()
+            if isinstance(value, str)
+            # fmt: on
+        ]
 
-    def find_syntax_name(self, syntax_file: str):
+    def _find_syntax_name(self, syntax_file: str):
         """
         find the name section in the give syntax file path
 
@@ -164,9 +153,9 @@ class typeShortListener(sublime_plugin.EventListener):
         else:
             matches = self.name_yaml_regex.search(content)
 
-        return None if matches is None else matches.group("name").strip()
+        return None if matches else matches.group("name").strip()
 
-    def do_replace(self, view: sublime.View, binding: dict, last_inserted_chars: str) -> bool:
+    def _do_replace(self, view: sublime.View, binding: dict, last_inserted_chars: str) -> bool:
         """
         try to do replacement with given a binding and last inserted chars
 
@@ -178,8 +167,6 @@ class typeShortListener(sublime_plugin.EventListener):
         @return True/False on success/failure.
         """
 
-        settings = sublime.load_settings(PLUGIN_SETTINGS)
-
         for search, replacement in binding["keymaps"].items():
             # skip a keymap as early as possible
             if not (search.endswith(last_inserted_chars) or last_inserted_chars.endswith(search)):
@@ -189,18 +176,18 @@ class typeShortListener(sublime_plugin.EventListener):
 
             # iterate each region
             for region in view.sel():
-                check_region = sublime.Region(region.begin() - len(search), region.end())
+                check_region = [region.begin() - len(search), region.end()]
 
-                if view.substr(check_region) == search:
-                    regions_to_be_replaced.append((check_region.begin(), check_region.end()))
+                if view.substr(sublime.Region(*check_region)) == search:
+                    regions_to_be_replaced.append(check_region)
 
             if regions_to_be_replaced:
                 return view.run_command(
-                    PLUGIN_CMD,
+                    self.plugin_cmd,
                     {
                         "regions": regions_to_be_replaced,
                         "replacement": replacement,
-                        "cursor_placeholder": settings.get("cursor_placeholder", ""),
+                        "cursor_placeholder": get_setting("cursor_placeholder"),
                     },
                 )
 
