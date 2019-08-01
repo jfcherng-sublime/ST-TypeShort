@@ -1,13 +1,12 @@
-Sublime-TypeShort
-=================
+# Sublime-TypeShort
 
 TypeShort is a snippet-like plugin for Sublime Text 3.
-The original idea comes from [VvPhpDollar](https://github.com/ZhaonanLi/VvPhpDollar) by [ZhaonanLi](https://github.com/ZhaonanLi).
+The original idea comes from [VvPhpDollar](https://github.com/ZhaonanLi/VvPhpDollar)
+by [ZhaonanLi](https://github.com/ZhaonanLi).
 It will replace placeholders into corresponding replacements in real-time while typing.
 
 
-Why This Plugin?
-================
+## Why This Plugin?
 
 Do you ever consider `$`, `->`, `*`, `&`, etc to be uncomfortable to type?
 Typing them usually requires you to move your fingers farther.
@@ -21,21 +20,19 @@ Although `fj🔥` is 3-char, it could be typed faster than a single `$` due to Q
 You may also set `dk🔥` (or other rarely used combinations) as a placeholder for `->` as well for the same reason.
 
 
-Installation
-============
+## Installation
 
 Install using Package Control (Recommended), or by cloning this repository into the Packages directory.
 Note that this plugin need you to set your own (`placeholder`, `replacement`) pairs to work properly.
 
 
-Settings
-========
+## Settings
 
 This plugin does not have any default binding since it is very personal.
 To add a binding, edit settings from the menu `Preferences » Package Settings » TypeShort » Settings`.
 
 
-## Example settings
+### Example settings
 
 ```javascript
 {
