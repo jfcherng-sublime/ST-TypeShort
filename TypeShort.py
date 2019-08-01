@@ -1,14 +1,13 @@
-from . import functions
 import os
 import re
 import sublime
 import sublime_plugin
-
+from .functions import camel_to_snake
 
 PLUGIN_NAME = __package__
 PLUGIN_DIR = "Packages/%s" % PLUGIN_NAME
 PLUGIN_SETTINGS = "%s.sublime-settings" % PLUGIN_NAME
-PLUGIN_CMD = functions.camel_to_snake(PLUGIN_NAME)
+PLUGIN_CMD = camel_to_snake(PLUGIN_NAME)
 
 
 # Just a static cache.
@@ -23,7 +22,13 @@ syntax_infos = {}
 
 
 class typeShortCommand(sublime_plugin.TextCommand):
-    def run(self, edit, regions=[], replacement="", cursor_placeholder=""):
+    def run(
+        self,
+        edit: sublime.Edit,
+        regions: list = [],
+        replacement: str = "",
+        cursor_placeholder: str = "",
+    ) -> bool:
         v = sublime.active_window().active_view()
 
         cursor_placeholder_len = len(cursor_placeholder)
@@ -76,7 +81,7 @@ class typeShortListener(sublime_plugin.EventListener):
     name_xml_regex = re.compile(r"<key>name</key>\s*<string>(?P<name>.*?)</string>", re.DOTALL)
     name_yaml_regex = re.compile(r"^name\s*:(?P<name>.*)$", re.MULTILINE)
 
-    def on_modified(self, view):
+    def on_modified(self, view: sublime.View) -> None:
         """
         called after changes have been made to a view
 
@@ -117,7 +122,7 @@ class typeShortListener(sublime_plugin.EventListener):
             ):
                 return
 
-    def get_current_syntax(self, view):
+    def get_current_syntax(self, view: sublime.View) -> list:
         """
         get the syntax file name and the syntax name which is on the
         bottom-right corner of ST
@@ -140,7 +145,7 @@ class typeShortListener(sublime_plugin.EventListener):
 
         return [value for value in syntax_infos[syntax_file].values() if isinstance(value, str)]
 
-    def find_syntax_name(self, syntax_file):
+    def find_syntax_name(self, syntax_file: str):
         """
         find the name section in the give syntax file path
 
@@ -161,7 +166,7 @@ class typeShortListener(sublime_plugin.EventListener):
 
         return None if matches is None else matches.group("name").strip()
 
-    def do_replace(self, view, binding, last_inserted_chars):
+    def do_replace(self, view: sublime.View, binding: dict, last_inserted_chars: str) -> bool:
         """
         try to do replacement with given a binding and last inserted chars
 
