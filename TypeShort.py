@@ -153,7 +153,7 @@ class typeShortListener(sublime_plugin.EventListener):
         else:
             matches = self.name_yaml_regex.search(content)
 
-        return None if matches else matches.group("name").strip()
+        return matches.group("name").strip() if matches else None
 
     def _do_replace(self, view: sublime.View, binding: dict, last_inserted_chars: str) -> bool:
         """
