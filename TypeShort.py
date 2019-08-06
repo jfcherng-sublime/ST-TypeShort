@@ -2,8 +2,9 @@ import os
 import re
 import sublime
 import sublime_plugin
-from .functions import camel_to_snake, msg
+from .functions import camel_to_snake
 from .Globals import Globals
+from .log import msg
 from .settings import get_package_name, get_setting
 
 
@@ -66,13 +67,6 @@ class typeShortListener(sublime_plugin.EventListener):
     name_yaml_regex = re.compile(r"^name\s*:(?P<name>.*)$", re.MULTILINE)
 
     def on_modified(self, view: sublime.View) -> None:
-        """
-        called after changes have been made to a view
-
-        @param self The object
-        @param view The view
-        """
-
         v = sublime.active_window().active_view()
 
         # fix the issue that breaks functionality for undo/soft_undo
@@ -107,8 +101,7 @@ class typeShortListener(sublime_plugin.EventListener):
 
     def get_current_syntax(self, view: sublime.View) -> list:
         """
-        get the syntax file name and the syntax name which is displayed on the
-        bottom-right corner of ST
+        @brief Get the syntax file name and the syntax name which is displayed on the bottom-right corner of ST.
 
         @param self The object
         @param view The view
@@ -136,7 +129,7 @@ class typeShortListener(sublime_plugin.EventListener):
 
     def _find_syntax_name(self, syntax_file: str):
         """
-        find the name section in the give syntax file path
+        @brief Find the name section in the give syntax file path.
 
         @param self        The object
         @param syntax_file The path of a syntax file
@@ -157,10 +150,10 @@ class typeShortListener(sublime_plugin.EventListener):
 
     def _do_replace(self, view: sublime.View, binding: dict, last_inserted_chars: str) -> bool:
         """
-        try to do replacement with given a binding and last inserted chars
+        @brief Try to do replacement with given a binding and last inserted chars.
 
         @param self                The object
-        @param view                The view object
+        @param view                The view
         @param binding             A binding in `bindings` in the settings file
         @param last_inserted_chars The last inserted characters
 
