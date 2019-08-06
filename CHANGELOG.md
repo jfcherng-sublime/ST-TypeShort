@@ -1,6 +1,11 @@
 # TypeShort
 
 
+## 1.4.5
+
+- Fix a buggy typo which causes this plugin not to work in `Go` syntax.
+
+
 ## 1.4.4
 
 - Just some refactors.
