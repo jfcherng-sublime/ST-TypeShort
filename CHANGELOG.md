@@ -1,6 +1,12 @@
 # TypeShort
 
 
+## 1.4.6
+
+- Fix error message is not printed when there are more than 1 placeholder in the replacement.
+- Split out `TypeShortCommand.py` from `TypeShort.py`.
+
+
 ## 1.4.5
 
 - Fix a buggy typo which causes this plugin not to work in `Go` syntax.
