@@ -4,11 +4,11 @@ import sublime
 import sublime_plugin
 from .functions import camel_to_snake
 from .Globals import Globals
-from .log import msg
+from .log import print_msg
 from .settings import get_package_name, get_setting
 
 
-class typeShortCommand(sublime_plugin.TextCommand):
+class TypeShortCommand(sublime_plugin.TextCommand):
     def run(
         self,
         edit: sublime.Edit,
@@ -27,7 +27,7 @@ class typeShortCommand(sublime_plugin.TextCommand):
 
             # wrong usage
             if cursor_placeholder_count > 1:
-                msg("ERROR: More than one cursor placeholder in `{}`".format(replacement))
+                print_msg("ERROR: More than one cursor placeholder in `{}`".format(replacement))
 
                 return False
 
@@ -59,7 +59,7 @@ class typeShortCommand(sublime_plugin.TextCommand):
         return True
 
 
-class typeShortListener(sublime_plugin.EventListener):
+class TypeShortListener(sublime_plugin.EventListener):
     plugin_cmd = camel_to_snake(get_package_name())
 
     source_scope_regex = re.compile(r"\b(?:source|text)\.[^\s]+")

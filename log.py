@@ -1,10 +1,24 @@
-def msg(msg: str) -> str:
+def msg(message: str) -> str:
     """
-    @brief Format the message for this plugin.
+    @brief Generate plugin message.
 
-    @param msg The message
+    @param message The message
 
-    @return The formatted message
+    @return The plugin message.
     """
 
-    return "[{name}] {msg}".format(name=__package__, msg=msg)
+    from .settings import get_package_name
+
+    return "[{plugin}] {message}".format(plugin=get_package_name(), message=message)
+
+
+def print_msg(message: str, show_message: bool = True) -> None:
+    """
+    @brief Print plugin message to ST's console.
+
+    @param message      The message
+    @param show_message Whether to print the message
+    """
+
+    if show_message:
+        print(msg(message))
