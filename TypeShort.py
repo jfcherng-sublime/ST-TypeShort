@@ -10,20 +10,17 @@ from .settings import get_package_name, get_setting
 class TypeShortListener(sublime_plugin.EventListener):
     plugin_cmd = camel_to_snake(get_package_name())
 
-    source_scope_regex = re.compile(r"\b(?:source|text)\.[^\s]+")
-    name_xml_regex = re.compile(r"<key>name</key>\s*<string>(?P<name>.*?)</string>", re.DOTALL)
-    name_yaml_regex = re.compile(r"^name\s*:(?P<name>.*)$", re.MULTILINE)
+    name_xml_regex = re.compile(r"<key>name</key>\s*<string>(?P<name>[^<>]*?)", re.DOTALL)
+    name_yaml_regex = re.compile(r"^name\s*:\s*['\"]?(?P<name>.*)['\"]?(?=$|\s)", re.MULTILINE)
 
     def on_modified(self, view: sublime.View) -> None:
-        v = sublime.active_window().active_view()
-
         # fix the issue that breaks functionality for undo/soft_undo
-        history_cmd = v.command_history(1)
+        history_cmd = view.command_history(1)
         if history_cmd[0] == self.plugin_cmd:
             return
 
         # no action if we are not typing
-        history_cmd = v.command_history(0)
+        history_cmd = view.command_history(0)
         if history_cmd[0] != "insert":
             return
 
@@ -31,23 +28,47 @@ class TypeShortListener(sublime_plugin.EventListener):
         # this could be more than one char sometimes somehow
         last_inserted_chars = history_cmd[1]["characters"]
 
-        # collect scopes from the selection
-        # we expect the fact that most regions would have the same scope
-        scopes_in_selection = {v.scope_name(region.begin()).rstrip() for region in v.sel()}
+        bindings = get_setting("bindings")
+        current_syntaxes = self._get_current_syntaxes(view)
 
-        # generate valid source scopes
-        source_scopes = set(self.get_current_syntax(v)) | set(
-            self.source_scope_regex.findall(" ".join(scopes_in_selection))
-        )
+        for idx in range(0, len(bindings)):
+            bindings[idx]["syntax_list"] = set(bindings[idx]["syntax_list"])
 
-        # try possible working bindings
-        for binding in get_setting("bindings"):
-            if source_scopes & set(binding["syntax_list"]) and self._do_replace(
-                v, binding, last_inserted_chars
-            ):
-                return
+        jobs = [
+            # {
+            #     "region": [3, 6],
+            #     "replacement": "$",
+            # },
+            # ...
+        ]
 
-    def get_current_syntax(self, view: sublime.View) -> list:
+        for region in view.sel():
+            for binding in bindings:
+                if (
+                    # syntax matching
+                    not (current_syntaxes & binding["syntax_list"])
+                    # scope matching
+                    and not any(
+                        view.match_selector(region.begin(), syntax)
+                        for syntax in binding["syntax_list"]
+                    )
+                ):
+                    continue
+
+                job = self._test_replace(view, region, binding, last_inserted_chars)
+
+                if job:
+                    jobs.append(job)
+
+                    break
+
+        if jobs:
+            view.run_command(
+                self.plugin_cmd,
+                {"jobs": jobs, "cursor_placeholder": get_setting("cursor_placeholder")},
+            )
+
+    def _get_current_syntaxes(self, view: sublime.View) -> set:
         """
         @brief Get the syntax file name and the syntax name which is displayed on the bottom-right corner of ST.
 
@@ -60,20 +81,25 @@ class TypeShortListener(sublime_plugin.EventListener):
         syntax_file = view.settings().get("syntax")
 
         if syntax_file not in Globals.syntax_infos:
+            file_basename = os.path.basename(syntax_file)
+            file_name, file_ext = os.path.splitext(file_basename)
+
+            # the syntax name displayed on the bottom-right corner of ST
+            syntax_name = self._find_syntax_name(syntax_file) or ""
+
+            # in case there is an empty one
+            syntax_ids = set([file_name, syntax_name]) - set([""])
+
             Globals.syntax_infos[syntax_file] = {
-                # the syntax file name without an extension
-                "file_name": os.path.splitext(os.path.basename(syntax_file))[0],
-                # the syntax name displayed on the bottom-right corner of ST
-                "syntax_name": self._find_syntax_name(syntax_file),
+                "file_basename": file_basename,
+                "file_ext": file_ext,  # with dot
+                "file_name": file_name,  # no ext
+                "file_path": syntax_file,
+                "syntax_name": syntax_name,
+                "syntax_ids": syntax_ids,  # names represent this syntax
             }
 
-        return [
-            # fmt: off
-            value
-            for value in Globals.syntax_infos[syntax_file].values()
-            if isinstance(value, str)
-            # fmt: on
-        ]
+        return Globals.syntax_infos[syntax_file]["syntax_ids"]
 
     def _find_syntax_name(self, syntax_file: str):
         """
@@ -82,7 +108,7 @@ class TypeShortListener(sublime_plugin.EventListener):
         @param self        The object
         @param syntax_file The path of a syntax file
 
-        @return The syntax name of `syntax_file` or None.
+        @return Optional[str] The syntax name of `syntax_file` or None.
         """
 
         content = sublime.load_resource(syntax_file).strip()
@@ -96,16 +122,19 @@ class TypeShortListener(sublime_plugin.EventListener):
 
         return matches.group("name").strip() if matches else None
 
-    def _do_replace(self, view: sublime.View, binding: dict, last_inserted_chars: str) -> bool:
+    def _test_replace(
+        self, view: sublime.View, region: sublime.Region, binding: dict, last_inserted_chars: str
+    ):
         """
         @brief Try to do replacement with given a binding and last inserted chars.
 
         @param self                The object
         @param view                The view
+        @param region              The region
         @param binding             A binding in `bindings` in the settings file
         @param last_inserted_chars The last inserted characters
 
-        @return True/False on success/failure.
+        @return Optional[dict]
         """
 
         for search, replacement in binding["keymaps"].items():
@@ -113,23 +142,9 @@ class TypeShortListener(sublime_plugin.EventListener):
             if not (search.endswith(last_inserted_chars) or last_inserted_chars.endswith(search)):
                 continue
 
-            regions_to_be_replaced = []
+            check_region = [region.begin() - len(search), region.end()]
 
-            # iterate each region
-            for region in view.sel():
-                check_region = [region.begin() - len(search), region.end()]
+            if view.substr(sublime.Region(*check_region)) == search:
+                return {"region": check_region, "replacement": replacement}
 
-                if view.substr(sublime.Region(*check_region)) == search:
-                    regions_to_be_replaced.append(check_region)
-
-            if regions_to_be_replaced:
-                return view.run_command(
-                    self.plugin_cmd,
-                    {
-                        "regions": regions_to_be_replaced,
-                        "replacement": replacement,
-                        "cursor_placeholder": get_setting("cursor_placeholder"),
-                    },
-                )
-
-        return False
+        return None
