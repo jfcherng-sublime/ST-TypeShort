@@ -48,10 +48,7 @@ class TypeShortListener(sublime_plugin.EventListener):
                     # syntax matching
                     not (current_syntaxes & binding["syntax_list"])
                     # scope matching
-                    and not any(
-                        view.match_selector(region.begin(), syntax)
-                        for syntax in binding["syntax_list"]
-                    )
+                    and not view.match_selector(region.begin(), "|".join(binding["syntax_list"]))
                 ):
                     continue
 
