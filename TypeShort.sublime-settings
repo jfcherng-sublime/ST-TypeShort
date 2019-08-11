@@ -6,39 +6,45 @@
     "cursor_placeholder": "{|}",
 
     // You can alternatively use either syntax file name, syntax name or scopes in the "syntax_list".
+    // But scopes are recommended and the use of syntax name may be removed in the future.
+    //
     // - syntax file name: The syntax file name without extension.
     // - syntax name: It's package-dependent and as shown on the bottom-right corner of your ST windows.
     // - scope: ctrl+alt+shift+p shows it which is in the form of "source.xxx/text.xxx".
     "bindings": [
     /*
         {
+            // only works in HTML
+            "syntax_list": ["text.html", "text.html.basic"],
             // convert 'cmt ' into '<!--  -->' and place the cursor at its mid
             "keymaps": {
-                "cmt ": "<!-- {|} -->"
+                "cmt ": "<!-- {|} -->",
             },
-            // only works in HTML
-            "syntax_list": ["text.html", "text.html.basic"]
         },
         {
+            // only works in PHP
+            "syntax_list": ["source.php"],
             // convert 'fj ' into '$'
             // convert 'dk ' into '->'
             "keymaps": {
                 "fj ": "$",
-                "dk ": "->"
+                "dk ": "->",
             },
-            // only works in PHP
-            "syntax_list": ["source.php"]
         },
         {
+            // only works in C/C++
+            "syntax_list": [
+                "source.c", "source.c++",
+                "source.objc", "source.objc++",
+                "source.c++11", // C++11 package
+            ],
             // convert 'fj ' into '*'
-            // convert 'dk ' into '->'
+            // convert 'dk ' into '->',
             "keymaps": {
                 "fj ": "*",
-                "dk ": "->"
+                "dk ": "->",
             },
-            // only works in C/C++
-            "syntax_list": ["source.c", "source.c++", "source.c++11"]
-        }
+        },
     */
-    ]
+    ],
 }
