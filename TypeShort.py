@@ -2,38 +2,43 @@ import os
 import re
 import sublime
 import sublime_plugin
+from .BindingsCompiler import BindingsCompiler
 from .functions import camel_to_snake
 from .Globals import Globals
-from .settings import get_package_name, get_setting
+from .settings import get_package_name, get_setting, get_settings_object, get_settings_file
+
+
+def plugin_loaded() -> None:
+    def plugin_settings_listener() -> None:
+        """ called when the settings file is changed """
+
+        Globals.bindings = BindingsCompiler(get_setting("bindings")).compile()
+
+    # when the user settings is modified...
+    get_settings_object().add_on_change(get_settings_file(), plugin_settings_listener)
+    plugin_settings_listener()
+
+
+def plugin_unloaded() -> None:
+    get_settings_object().clear_on_change(get_settings_file())
 
 
 class TypeShortListener(sublime_plugin.EventListener):
     plugin_cmd = camel_to_snake(get_package_name())
 
     name_xml_regex = re.compile(r"<key>name</key>\s*<string>(?P<name>[^<>]*?)", re.DOTALL)
-    name_yaml_regex = re.compile(r"^name\s*:\s*['\"]?(?P<name>.*)['\"]?(?=$|\s)", re.MULTILINE)
+    name_yaml_regex = re.compile(r"^name\s*:\s*['\"]?(?P<name>.*)['\"]?\s*$", re.MULTILINE)
 
     def on_modified(self, view: sublime.View) -> None:
+        # only work when the user was typing
+        if view.command_history(0)[0] != "insert":
+            return
+
         # fix the issue that breaks functionality for undo/soft_undo
-        history_cmd = view.command_history(1)
-        if history_cmd[0] == self.plugin_cmd:
+        if view.command_history(1)[0] == self.plugin_cmd:
             return
 
-        # no action if we are not typing
-        history_cmd = view.command_history(0)
-        if history_cmd[0] != "insert":
-            return
-
-        # get the last inserted chars
-        # this could be more than one char sometimes somehow
-        last_inserted_chars = history_cmd[1]["characters"]
-
-        bindings = get_setting("bindings")
-        current_syntaxes = self._get_current_syntaxes(view)
-
-        for idx in range(0, len(bindings)):
-            bindings[idx]["syntax_list"] = set(bindings[idx]["syntax_list"])
-
+        # jobs for the plugin command
         jobs = [
             # {
             #     "region": [3, 6],
@@ -43,27 +48,52 @@ class TypeShortListener(sublime_plugin.EventListener):
         ]
 
         for region in view.sel():
-            for binding in bindings:
+            point = region.begin()
+
+            for binding in Globals.bindings:
                 if (
-                    # syntax matching
-                    not (current_syntaxes & binding["syntax_list"])
-                    # scope matching
-                    and not view.match_selector(region.begin(), "|".join(binding["syntax_list"]))
+                    # syntax matching such as "PHP"
+                    (self._get_current_syntaxes(view) & binding["syntax_list"])
+                    # scope matching such as "source.php"
+                    or view.match_selector(point, binding["syntax_list_selector"])
                 ):
-                    continue
+                    job = self._test_point_with_binding(view, point, binding)
 
-                job = self._test_replace(view, region, binding, last_inserted_chars)
+                    if job:
+                        jobs.append(job)
 
-                if job:
-                    jobs.append(job)
-
-                    break
+                        break
 
         if jobs:
             view.run_command(
                 self.plugin_cmd,
                 {"jobs": jobs, "cursor_placeholder": get_setting("cursor_placeholder")},
             )
+
+    def _test_point_with_binding(self, view: sublime.View, point: int, binding: dict):
+        """
+        @brief Test whether the binding can be applied to the point.
+
+        @param self    The object
+        @param view    The view
+        @param point   The point
+        @param binding The binding
+
+        @return Optional[dict] The job for plugin command if there is a matching one
+        """
+
+        # substr() the longest possible search to prevent from calling View API multiple times
+        check_content = view.substr(
+            sublime.Region(point - binding["keymaps_search_max_length"], point)
+        )
+
+        for search, replacement in binding["keymaps"].items():
+            search_length = len(search)
+
+            if check_content[-search_length:] == search:
+                return {"region": [point - search_length, point], "replacement": replacement}
+
+        return None
 
     def _get_current_syntaxes(self, view: sublime.View) -> set:
         """
@@ -105,7 +135,7 @@ class TypeShortListener(sublime_plugin.EventListener):
         @param self        The object
         @param syntax_file The path of a syntax file
 
-        @return Optional[str] The syntax name of `syntax_file` or None.
+        @return Optional[str] The syntax name of the `syntax_file` if found.
         """
 
         content = sublime.load_resource(syntax_file).strip()
@@ -118,30 +148,3 @@ class TypeShortListener(sublime_plugin.EventListener):
             matches = self.name_yaml_regex.search(content)
 
         return matches.group("name").strip() if matches else None
-
-    def _test_replace(
-        self, view: sublime.View, region: sublime.Region, binding: dict, last_inserted_chars: str
-    ):
-        """
-        @brief Try to do replacement with given a binding and last inserted chars.
-
-        @param self                The object
-        @param view                The view
-        @param region              The region
-        @param binding             A binding in `bindings` in the settings file
-        @param last_inserted_chars The last inserted characters
-
-        @return Optional[dict]
-        """
-
-        for search, replacement in binding["keymaps"].items():
-            # skip a keymap as early as possible
-            if not (search.endswith(last_inserted_chars) or last_inserted_chars.endswith(search)):
-                continue
-
-            check_region = [region.begin() - len(search), region.end()]
-
-            if view.substr(sublime.Region(*check_region)) == search:
-                return {"region": check_region, "replacement": replacement}
-
-        return None
