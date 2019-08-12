@@ -8,50 +8,52 @@ It will replace placeholders into corresponding replacements in real-time while 
 
 ## Why This Plugin?
 
-Do you ever consider `$`, `->`, `*`, `&`, etc to be uncomfortable to type?
+Have you ever considered `$`, `->`, `*` or `&`, etc to be uncomfortable to type?
 Typing them usually requires you to move your fingers farther.
 
 ![screenshot](https://raw.githubusercontent.com/jfcherng/sublime-TypeShort/gh-pages/images/screenshot.gif)
+Oh, OOP PHP uses `$this->` so often... How long it takes you to type it?
 
-Take the screenshot above as an example, you can set `fj🔥` 
-(`🔥` represents a <kbd>space</kbd> here just for visibility) as a placeholder for `$` in PHP.
-This plugin will automatically replace `fj🔥` with `$` in PHP whenever you type it.
-Although `fj🔥` is 3-char, it could be typed faster than a single `$` due to QWERTY keyboard layout.
-You may also set `dk🔥` (or other rarely used combinations) as a placeholder for `->` as well for the same reason.
+Take the screenshot above as an example, you can set `fj█`
+(`█` represents <kbd>space</kbd> here just for visibility) as a placeholder for `$` in PHP.
+This plugin will automatically replace `fj█` with `$` in PHP whenever you type it.
+Although `fj█` is 3-char, it can be typed faster than a single `$`
+and you do not have to move any of your finger due to QWERTY keyboard layout.
 
 
 ## Installation
 
-Install using Package Control (Recommended), or by cloning this repository into the Packages directory.
-Note that this plugin need you to set your own (`placeholder`, `replacement`) pairs to work properly.
+This package is available on Package Control by the name of [TypeShort](https://packagecontrol.io/packages/TypeShort).
+Note that you have to set your own `(placeholder, replacement)` pairs to make this plugin work properly.
 
 
 ## Settings
 
-This plugin does not have any default binding since it is very personal.
+This plugin does not have any default binding since obviously they are very personal.
 To add a binding, edit settings from the menu `Preferences » Package Settings » TypeShort » Settings`.
 
 
-### Example settings
+### Example Settings
 
 ```javascript
 {
     // This file is an example settings.
-    // You should write your own settings in "Preferences » Package Settings » TypeShort » Settings - User"
+    // You should write your own settings in "Preferences » Package Settings » TypeShort » Settings"
 
     // the symbol used to represent the new cursor position after a replacement
     "cursor_placeholder": "{|}",
 
     // You can alternatively use either syntax file name, syntax name or scopes in the "syntax_list".
-    // But scopes are recommended and the use of syntax name may be removed in the future.
+    // But scopes are recommended and the use of syntax (file) name may be removed in the future.
     //
     // - syntax file name: The syntax file name without extension.
     // - syntax name: It's package-dependent and as shown on the bottom-right corner of your ST windows.
-    // - scope: ctrl+alt+shift+p shows it which is in the form of "source.xxx/text.xxx".
+    // - scope: ctrl+alt+shift+p shows it which usually starts with "source.xxx" or "text.xxx".
+    //          You can use any ST selectors here. See https://www.sublimetext.com/docs/3/selectors.html
     "bindings": [
         {
             // only works in HTML
-            "syntax_list": ["text.html", "text.html.basic"],
+            "syntax_list": ["text.html.basic"],
             // convert 'cmt ' into '<!--  -->' and place the cursor at its mid
             "keymaps": {
                 "cmt ": "<!-- {|} -->",
@@ -87,6 +89,6 @@ To add a binding, edit settings from the menu `Preferences » Package Settings �
 
 
 Supporters <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ATXYY9Y78EQ3Y" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" /></a>
-==========
+----------
 
 Thank you guys for sending me some cups of coffee.
