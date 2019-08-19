@@ -1,9 +1,13 @@
 # Sublime-TypeShort
 
+<a href="https://packagecontrol.io/packages/TypeShort"><img alt="Package Control" src="https://img.shields.io/packagecontrol/dt/TypeShort"></a>
+<a href="https://github.com/jfcherng/Sublime-TypeShort/tags"><img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/jfcherng/Sublime-TypeShort?logo=github"></a>
+<a href="https://github.com/jfcherng/Sublime-TypeShort/blob/master/LICENSE"><img alt="Project license" src="https://img.shields.io/github/license/jfcherng/Sublime-TypeShort?logo=github"></a>
+<a href="https://github.com/jfcherng/Sublime-TypeShort/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/jfcherng/Sublime-TypeShort?logo=github"></a>
+<a href="https://www.paypal.me/jfcherng/5usd" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-blue.svg?logo=paypal" /></a>
+
 TypeShort is a snippet-like plugin for Sublime Text 3.
-The original idea comes from [VvPhpDollar](https://github.com/ZhaonanLi/VvPhpDollar)
-by [ZhaonanLi](https://github.com/ZhaonanLi).
-It will replace placeholders into corresponding replacements in real-time while typing.
+It replaces placeholders into corresponding replacements in real-time while typing.
 
 
 ## Why This Plugin?
@@ -86,9 +90,3 @@ To add a binding, edit settings from the menu `Preferences Â» Package Settings Â
     ],
 }
 ```
-
-
-Supporters <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ATXYY9Y78EQ3Y" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" /></a>
-----------
-
-Thank you guys for sending me some cups of coffee.
