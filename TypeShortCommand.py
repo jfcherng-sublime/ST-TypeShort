@@ -1,10 +1,11 @@
 import sublime
 import sublime_plugin
+from typing import Dict, List
 from .log import print_msg
 
 
 class TypeShortCommand(sublime_plugin.TextCommand):
-    def run(self, edit: sublime.Edit, jobs: list, cursor_placeholder: str = "{|}") -> bool:
+    def run(self, edit: sublime.Edit, jobs: List[Dict], cursor_placeholder: str = "{|}") -> bool:
         cursor_placeholder_len = len(cursor_placeholder)
         cursor_fixed_offset = 0
 
@@ -48,3 +49,8 @@ class TypeShortCommand(sublime_plugin.TextCommand):
                 sels.add(sublime.Region(cursor_position_fixed, cursor_position_fixed))
 
         return True
+
+    def is_visible(self) -> bool:
+        """ This command is not for user to run manually """
+
+        return False

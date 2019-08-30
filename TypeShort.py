@@ -2,6 +2,7 @@ import os
 import re
 import sublime
 import sublime_plugin
+from typing import Dict, Set, Optional
 from .BindingsCompiler import BindingsCompiler
 from .functions import camel_to_snake
 from .Globals import Globals
@@ -70,7 +71,9 @@ class TypeShortListener(sublime_plugin.EventListener):
                 {"jobs": jobs, "cursor_placeholder": get_setting("cursor_placeholder")},
             )
 
-    def _test_point_with_binding(self, view: sublime.View, point: int, binding: dict):
+    def _test_point_with_binding(
+        self, view: sublime.View, point: int, binding: dict
+    ) -> Optional[Dict]:
         """
         @brief Test whether the binding can be applied to the point.
 
@@ -95,7 +98,7 @@ class TypeShortListener(sublime_plugin.EventListener):
 
         return None
 
-    def _get_current_syntaxes(self, view: sublime.View) -> set:
+    def _get_current_syntaxes(self, view: sublime.View) -> Set:
         """
         @brief Get the syntax file name and the syntax name which is displayed on the bottom-right corner of ST.
 
@@ -128,7 +131,7 @@ class TypeShortListener(sublime_plugin.EventListener):
 
         return Globals.syntax_infos[syntax_file]["syntax_ids"]
 
-    def _find_syntax_name(self, syntax_file: str):
+    def _find_syntax_name(self, syntax_file: str) -> Optional[str]:
         """
         @brief Find the name section in the give syntax file path.
 

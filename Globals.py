@@ -1,4 +1,4 @@
-class Globals(object):
+class Globals:
     """
     @brief This class stores application-level global variables.
     """
