@@ -1,11 +1,11 @@
 # Sublime-TypeShort
 
-<a href="https://travis-ci.org/jfcherng/Sublime-TypeShort"><img alt="Travis (.org) branch" src="https://img.shields.io/travis/jfcherng/Sublime-TypeShort/master"></a>
-<a href="https://packagecontrol.io/packages/TypeShort"><img alt="Package Control" src="https://img.shields.io/packagecontrol/dt/TypeShort"></a>
-<a href="https://github.com/jfcherng/Sublime-TypeShort/tags"><img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/jfcherng/Sublime-TypeShort?logo=github"></a>
-<a href="https://github.com/jfcherng/Sublime-TypeShort/blob/master/LICENSE"><img alt="Project license" src="https://img.shields.io/github/license/jfcherng/Sublime-TypeShort?logo=github"></a>
-<a href="https://github.com/jfcherng/Sublime-TypeShort/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/jfcherng/Sublime-TypeShort?logo=github"></a>
-<a href="https://www.paypal.me/jfcherng/5usd" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-blue.svg?logo=paypal" /></a>
+<a href="https://travis-ci.org/jfcherng/Sublime-TypeShort"><img alt="Travis (.org) branch" src="https://img.shields.io/travis/jfcherng/Sublime-TypeShort/master?style=flat-square"></a>
+<a href="https://packagecontrol.io/packages/TypeShort"><img alt="Package Control" src="https://img.shields.io/packagecontrol/dt/TypeShort?style=flat-square"></a>
+<a href="https://github.com/jfcherng/Sublime-TypeShort/tags"><img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/jfcherng/Sublime-TypeShort?style=flat-square&logo=github"></a>
+<a href="https://github.com/jfcherng/Sublime-TypeShort/blob/master/LICENSE"><img alt="Project license" src="https://img.shields.io/github/license/jfcherng/Sublime-TypeShort?style=flat-square&logo=github"></a>
+<a href="https://github.com/jfcherng/Sublime-TypeShort/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/jfcherng/Sublime-TypeShort?style=flat-square&logo=github"></a>
+<a href="https://www.paypal.me/jfcherng/5usd" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-blue.svg?style=flat-square&logo=paypal" /></a>
 
 TypeShort is a snippet-like plugin for Sublime Text 3.
 It replaces placeholders into corresponding replacements in real-time while typing.
