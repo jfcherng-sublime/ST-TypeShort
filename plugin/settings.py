@@ -4,7 +4,15 @@ from typing import Any
 
 
 def get_package_name() -> str:
-    return __package__
+    """
+    @brief Getsthe package name.
+
+    @return The package name.
+    """
+
+    # __package__ will be "THE_PLUGIN_NAME.plugin" under this folder structure
+    # anyway, the top module should always be the plugin name
+    return __package__.partition(".")[0]
 
 
 def get_package_path() -> str:
@@ -12,7 +20,7 @@ def get_package_path() -> str:
 
 
 def get_settings_file() -> str:
-    return "TypeShort.sublime-settings"
+    return get_package_name() + ".sublime-settings"
 
 
 def get_settings_object() -> sublime.Settings:
@@ -21,7 +29,3 @@ def get_settings_object() -> sublime.Settings:
 
 def get_setting(key: str, default=None) -> Any:
     return get_settings_object().get(key, default)
-
-
-def get_timestamp() -> float:
-    return time.time()

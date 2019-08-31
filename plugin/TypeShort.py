@@ -3,25 +3,9 @@ import re
 import sublime
 import sublime_plugin
 from typing import Dict, Set, Optional
-from .BindingsCompiler import BindingsCompiler
 from .functions import camel_to_snake
 from .Globals import Globals
-from .settings import get_package_name, get_setting, get_settings_object, get_settings_file
-
-
-def plugin_loaded() -> None:
-    def plugin_settings_listener() -> None:
-        """ called when the settings file is changed """
-
-        Globals.bindings = BindingsCompiler(get_setting("bindings")).compile()
-
-    # when the user settings is modified...
-    get_settings_object().add_on_change(get_settings_file(), plugin_settings_listener)
-    plugin_settings_listener()
-
-
-def plugin_unloaded() -> None:
-    get_settings_object().clear_on_change(get_settings_file())
+from .settings import get_package_name, get_setting
 
 
 class TypeShortListener(sublime_plugin.EventListener):
