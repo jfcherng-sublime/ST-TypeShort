@@ -1,3 +1,7 @@
+from typing import Any, Dict, List
+from .BindingsCompiler import BindingType
+
+
 class Globals:
     """
     @brief This class stores application-level global variables.
@@ -13,8 +17,8 @@ class Globals:
         #     "syntax_ids": syntax_ids,  # names represent this syntax
         # },
         # ...
-    }
+    }  # type: Dict[str, Any]
 
     # compiled from user settings "bindings" via "BindingsCompiler"
     # see "BindingsCompiler.py" for values
-    bindings = []
+    bindings = []  # type: List[BindingType]

@@ -5,7 +5,9 @@ from .log import print_msg
 
 
 class TypeShortCommand(sublime_plugin.TextCommand):
-    def run(self, edit: sublime.Edit, jobs: List[Dict], cursor_placeholder: str = "{|}") -> bool:
+    def run(  # type: ignore
+        self, edit: sublime.Edit, jobs: List[Dict], cursor_placeholder: str = "{|}"
+    ) -> bool:
         cursor_placeholder_len = len(cursor_placeholder)
         cursor_fixed_offset = 0
 

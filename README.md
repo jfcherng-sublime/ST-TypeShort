@@ -1,5 +1,6 @@
 # Sublime-TypeShort
 
+<a href="https://travis-ci.org/jfcherng/Sublime-TypeShort"><img alt="Travis (.org) branch" src="https://img.shields.io/travis/jfcherng/Sublime-TypeShort/master"></a>
 <a href="https://packagecontrol.io/packages/TypeShort"><img alt="Package Control" src="https://img.shields.io/packagecontrol/dt/TypeShort"></a>
 <a href="https://github.com/jfcherng/Sublime-TypeShort/tags"><img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/tag/jfcherng/Sublime-TypeShort?logo=github"></a>
 <a href="https://github.com/jfcherng/Sublime-TypeShort/blob/master/LICENSE"><img alt="Project license" src="https://img.shields.io/github/license/jfcherng/Sublime-TypeShort?logo=github"></a>

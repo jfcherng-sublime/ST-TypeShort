@@ -2,7 +2,7 @@ import os
 import re
 import sublime
 import sublime_plugin
-from typing import Dict, Set, Optional
+from typing import Any, List, Dict, Set, Optional
 from .functions import camel_to_snake
 from .Globals import Globals
 from .settings import get_package_name, get_setting
@@ -30,9 +30,9 @@ class TypeShortListener(sublime_plugin.EventListener):
             #     "replacement": "$",
             # },
             # ...
-        ]
+        ]  # type: List[Dict[str, Any]]
 
-        for region in view.sel():
+        for region in view.sel():  # type: ignore
             point = region.begin()
 
             for binding in Globals.bindings:
@@ -92,7 +92,7 @@ class TypeShortListener(sublime_plugin.EventListener):
         @return The current syntax.
         """
 
-        syntax_file = view.settings().get("syntax")
+        syntax_file = str(view.settings().get("syntax"))
 
         if syntax_file not in Globals.syntax_infos:
             file_basename = os.path.basename(syntax_file)

@@ -1,22 +1,24 @@
 import copy
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
+
+BindingType = Dict[str, Any]
 
 
-class BindingsCompiler(object):
-    bindings = []
+class BindingsCompiler:
+    bindings = []  # type: List[BindingType]
     binding_required_keys = ["syntax_list", "keymaps"]
 
-    def __init__(self, bindings: List[Dict] = []) -> None:
+    def __init__(self, bindings: List[BindingType] = []) -> None:
         self.bindings = copy.deepcopy(bindings)
 
     def compile(self) -> List:
         return [binding for binding in map(self._compile_binding, self.bindings) if binding]
 
-    def _compile_binding(self, binding: Dict) -> Dict:
+    def _compile_binding(self, binding: Dict) -> Optional[Dict]:
         if not all(key in binding for key in self.binding_required_keys):
             return None
 
-        binding_c = {}
+        binding_c = {}  # type: BindingType
 
         binding_c["syntax_list"] = set(binding["syntax_list"])
         binding_c["syntax_list_selector"] = "|".join(binding_c["syntax_list"])
