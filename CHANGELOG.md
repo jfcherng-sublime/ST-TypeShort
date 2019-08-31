@@ -1,6 +1,12 @@
 # TypeShort
 
 
+## 1.5.1
+
+- Add and utilize the `typing` module.
+- Changed plugin directory structure.
+
+
 ## 1.5.0
 
 - Performance improvement.
