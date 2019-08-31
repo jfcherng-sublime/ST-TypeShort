@@ -1,6 +1,11 @@
 # TypeShort
 
 
+## 1.5.2
+
+- Introduce `mypy` for static analysis.
+
+
 ## 1.5.1
 
 - Add and utilize the `typing` module.

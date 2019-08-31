@@ -2,7 +2,6 @@ TypeShort has been updated. To see the changelog, visit
 Preferences » Package Settings » TypeShort » CHANGELOG
 
 
-## 1.5.1
+## 1.5.2
 
-- Add and utilize the `typing` module.
-- Changed plugin directory structure.
+- Introduce `mypy` for static analysis.
