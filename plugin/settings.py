@@ -1,5 +1,4 @@
 import sublime
-import time
 from typing import Any
 
 
