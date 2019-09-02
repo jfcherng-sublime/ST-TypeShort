@@ -1,7 +1,7 @@
 import sublime
 import sublime_plugin
 from typing import Dict, List
-from .log import print_msg
+from ..log import print_msg
 
 
 class TypeShortCommand(sublime_plugin.TextCommand):

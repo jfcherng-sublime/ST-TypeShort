@@ -1,8 +1,8 @@
 from .plugin import set_up, tear_down
 
 # main plugin classes
-from .plugin.TypeShort import *
-from .plugin.TypeShortCommand import *
+from .plugin.sublime_text.TypeShort import *
+from .plugin.sublime_text.TypeShortCommand import *
 
 
 def plugin_loaded() -> None:

@@ -3,9 +3,9 @@ import re
 import sublime
 import sublime_plugin
 from typing import Any, List, Dict, Set, Optional
-from .functions import camel_to_snake
-from .Globals import Globals
-from .settings import get_package_name, get_setting
+from ..functions import camel_to_snake
+from ..Globals import Globals
+from ..settings import get_package_name, get_setting
 
 
 class TypeShortListener(sublime_plugin.EventListener):
