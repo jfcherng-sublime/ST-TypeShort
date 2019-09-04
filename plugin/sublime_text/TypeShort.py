@@ -84,7 +84,8 @@ class TypeShortListener(sublime_plugin.EventListener):
 
     def _get_current_syntaxes(self, view: sublime.View) -> Set:
         """
-        @brief Get the syntax file name and the syntax name which is displayed on the bottom-right corner of ST.
+        @brief Get the syntax file name and the syntax name which is displayed
+               on the bottom-right corner of ST.
 
         @param self The object
         @param view The view
