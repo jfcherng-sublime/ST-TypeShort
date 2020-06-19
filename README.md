@@ -24,6 +24,53 @@ This plugin will automatically replace `fj█` with `$` in PHP whenever you type
 Although `fj█` is 3-char, it can be typed faster than a single `$`
 and you do not have to move any of your finger due to QWERTY keyboard layout.
 
+### The ST Built-in Way
+
+You can kind of having the same results with the following keybinding.
+So actually nowadays you may not need this plugin any more.
+
+<details>
+
+```js
+[
+  // HTML
+  {
+      "keys": ["c", "m", "t", " "],
+      "command": "insert_snippet",
+      "args": { "contents": "<!-- $0 -->" },
+      "context": [{
+          "key": "selector",
+          "operator": "equal",
+          "operand": "text.html.basic - source.php",
+      }],
+  },
+  // PHP
+  {
+      "keys": ["f", "j", " "],
+      "command": "insert",
+      "args": { "characters": "$" },
+      "context": [{
+          "key": "selector",
+          "operator": "equal",
+          "operand": "source.php",
+      }],
+  },
+  {
+      "keys": ["d", "k", " "],
+      "command": "insert",
+      "args": { "characters": "->" },
+      "context": [{
+          "key": "selector",
+          "operator": "equal",
+          "operand": "source.php",
+      }],
+  },
+]
+```
+
+</details>
+
+
 ## Installation
 
 This package is available on Package Control by the name of [TypeShort](https://packagecontrol.io/packages/TypeShort).
