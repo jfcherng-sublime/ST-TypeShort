@@ -30,9 +30,7 @@ class TypeShortCommand(sublime_plugin.TextCommand):
                 # correct usage
                 if cursor_placeholder_count == 1:
                     cursor_fixed_offset = (
-                        replacement.index(cursor_placeholder)
-                        + cursor_placeholder_len
-                        - len(replacement)
+                        replacement.index(cursor_placeholder) + cursor_placeholder_len - len(replacement)
                     )
                     replacement = replacement.replace(cursor_placeholder, "", 1)
 

@@ -50,14 +50,14 @@ class TypeShortListener(sublime_plugin.EventListener):
                         break
 
         if jobs:
+            # fmt: off
             view.run_command(
                 self.plugin_cmd,
                 {"jobs": jobs, "cursor_placeholder": get_setting("cursor_placeholder")},
             )
+            # fmt: on
 
-    def _test_point_with_binding(
-        self, view: sublime.View, point: int, binding: dict
-    ) -> Optional[Dict]:
+    def _test_point_with_binding(self, view: sublime.View, point: int, binding: dict) -> Optional[Dict]:
         """
         @brief Test whether the binding can be applied to the point.
 
@@ -70,9 +70,7 @@ class TypeShortListener(sublime_plugin.EventListener):
         """
 
         # substr() the longest possible search to prevent from calling View API multiple times
-        check_content = view.substr(
-            sublime.Region(point - binding["keymaps_search_max_length"], point)
-        )
+        check_content = view.substr(sublime.Region(point - binding["keymaps_search_max_length"], point))
 
         for search, replacement in binding["keymaps"].items():
             search_length = len(search)
