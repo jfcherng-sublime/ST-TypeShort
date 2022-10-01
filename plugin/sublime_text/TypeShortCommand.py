@@ -1,13 +1,13 @@
+from typing import Dict, List
+
 import sublime
 import sublime_plugin
-from typing import Dict, List
+
 from ..log import print_msg
 
 
 class TypeShortCommand(sublime_plugin.TextCommand):
-    def run(  # type: ignore
-        self, edit: sublime.Edit, jobs: List[Dict], cursor_placeholder: str = "{|}"
-    ) -> bool:
+    def run(self, edit: sublime.Edit, jobs: List[Dict], cursor_placeholder: str = "{|}") -> bool:  # type: ignore
         cursor_placeholder_len = len(cursor_placeholder)
         cursor_fixed_offset = 0
 
@@ -51,6 +51,6 @@ class TypeShortCommand(sublime_plugin.TextCommand):
         return True
 
     def is_visible(self) -> bool:
-        """ This command is not for user to run manually """
+        """This command is not for user to run manually"""
 
         return False

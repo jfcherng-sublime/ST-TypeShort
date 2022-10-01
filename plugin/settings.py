@@ -1,5 +1,6 @@
-import sublime
 from typing import Any
+
+import sublime
 
 
 def get_package_name() -> str:
