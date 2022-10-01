@@ -1,13 +1,66 @@
+[tool.mypy]
+# ignore_missing_imports = False
+check_untyped_defs = true
+strict_optional = true
+mypy_path = 'typings:stubs'
+
+[[tool.mypy.overrides]]
+module = [
+    "plugin.libs.*",
+]
+ignore_errors = true
+ignore_missing_imports = true
+
+[tool.isort]
+line_length = 120
+profile = 'black'
+py_version=38
+skip_glob = [
+  ".venv/**",
+  "br-*/**",
+  "branch-*/**",
+  "libs/**",
+  "plugin/libs/**",
+  "stubs/**",
+  "typings/**",
+  "vendor/**",
+  "venv/**",
+]
+
+[tool.pycln]
+all = true
+exclude = '(\.git|\.?venv|\.mypy_cache|br-.*|branch-.*|libs|stubs|tests/files|typings)/'
+
 [tool.black]
 line-length = 120
-target-version = ['py33']
-
-# regex
+target-version = ['py38']
 exclude = '''
 /(
-  \.git |
-  plugin/libs |
-  stubs |
-  typings
+  \.git
+  | \.?venv
+  | \.mypy_cache
+  | br-.*
+  | branch-.*
+  | libs
+  | stubs
+  | tests/files
+  | typings
 )/
 '''
+
+[tool.pyright]
+include = ['./']
+exclude = [
+  '**/__pycache__/',
+  '**/node_modules/',
+  # git-related
+  '**/.git/',
+  '**/br-*/',
+  '**/branch-*/',
+]
+ignore = [
+  '**/.venv',
+  '**/libs',
+]
+stubPath = 'typings'
+pythonVersion = '3.8'
