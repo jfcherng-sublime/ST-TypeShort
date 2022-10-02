@@ -7,7 +7,7 @@ from ..log import print_msg
 
 
 class TypeShortCommand(sublime_plugin.TextCommand):
-    def run(self, edit: sublime.Edit, jobs: List[Dict], cursor_placeholder: str = "{|}") -> bool:  # type: ignore
+    def run(self, edit: sublime.Edit, jobs: List[Dict], cursor_placeholder: str = "{|}") -> None:
         cursor_placeholder_len = len(cursor_placeholder)
         cursor_fixed_offset = 0
 
@@ -24,8 +24,7 @@ class TypeShortCommand(sublime_plugin.TextCommand):
                 # wrong usage
                 if cursor_placeholder_count > 1:
                     print_msg("ERROR: More than one cursor placeholder in `{}`".format(replacement))
-
-                    return False
+                    return
 
                 # correct usage
                 if cursor_placeholder_count == 1:
@@ -48,9 +47,6 @@ class TypeShortCommand(sublime_plugin.TextCommand):
                 cursor_position_fixed = cursor_position + cursor_fixed_offset
                 sels.add(sublime.Region(cursor_position_fixed, cursor_position_fixed))
 
-        return True
-
     def is_visible(self) -> bool:
         """This command is not for user to run manually"""
-
         return False

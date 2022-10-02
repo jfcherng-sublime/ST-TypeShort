@@ -1,12 +1,10 @@
 from typing import Any, Dict, List
 
-from .BindingsCompiler import BindingType
+from .compiler import BindingType
 
 
-class Globals:
-    """
-    @brief This class stores application-level global variables.
-    """
+class G:
+    """This class stores application-level "G"lobal variables."""
 
     syntax_infos = {
         # syntax_file: {
@@ -20,6 +18,5 @@ class Globals:
         # ...
     }  # type: Dict[str, Any]
 
-    # compiled from user settings "bindings" via "BindingsCompiler"
-    # see "BindingsCompiler.py" for values
     bindings = []  # type: List[BindingType]
+    """Compiled from user settings `bindings` via `BindingsCompiler`."""
