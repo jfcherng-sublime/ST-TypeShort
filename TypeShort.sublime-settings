@@ -11,7 +11,7 @@
     // - syntax file name: The syntax file name without extension.
     // - syntax name: It's package-dependent and as shown on the bottom-right corner of your ST windows.
     // - scope: ctrl+alt+shift+p shows it which usually starts with "source.xxx" or "text.xxx".
-    //          You can use any ST selectors here. See https://www.sublimetext.com/docs/3/selectors.html
+    //          You can use any ST selectors here. See https://www.sublimetext.com/docs/selectors.html
     "bindings": [
     /*
         {

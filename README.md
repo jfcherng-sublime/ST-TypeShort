@@ -7,7 +7,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/jfcherng-sublime/ST-TypeShort?style=flat-square&logo=github)](https://github.com/jfcherng-sublime/ST-TypeShort/stargazers)
 [![Donate to this project using Paypal](https://img.shields.io/badge/paypal-donate-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/jfcherng/5usd)
 
-TypeShort is a snippet-like plugin for Sublime Text 3.
+TypeShort is a snippet-like plugin for Sublime Text.
 It replaces placeholders into corresponding replacements in real-time while typing.
 
 ## Why This Plugin
@@ -40,7 +40,6 @@ So actually nowadays you may not need this plugin any more.
       "args": { "contents": "<!-- $0 -->" },
       "context": [{
           "key": "selector",
-          "operator": "equal",
           "operand": "text.html.basic - source.php",
       }],
   },
@@ -51,7 +50,6 @@ So actually nowadays you may not need this plugin any more.
       "args": { "characters": "$" },
       "context": [{
           "key": "selector",
-          "operator": "equal",
           "operand": "source.php",
       }],
   },
@@ -61,7 +59,6 @@ So actually nowadays you may not need this plugin any more.
       "args": { "characters": "->" },
       "context": [{
           "key": "selector",
-          "operator": "equal",
           "operand": "source.php",
       }],
   },
