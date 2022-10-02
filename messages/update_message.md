@@ -1,7 +1,7 @@
 TypeShort has been updated. To see the changelog, visit
 Preferences » Package Settings » TypeShort » CHANGELOG
 
+## 2.0.0
 
-## 1.5.2
-
-- Introduce `mypy` for static analysis.
+- No functional change. Just optimized with ST 4 plugin APIs.
+  Minimum ST version requirement: 4114
