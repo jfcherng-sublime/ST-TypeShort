@@ -17,7 +17,7 @@ __all__ = (
 
 def plugin_loaded() -> None:
     def plugin_settings_listener() -> None:
-        G.bindings = BindingsCompiler(get_setting("bindings")).compile()
+        G.bindings = list(BindingsCompiler(get_setting("bindings")).compile())
 
     # when the user settings is modified...
     get_settings_object().add_on_change(get_settings_file(), plugin_settings_listener)

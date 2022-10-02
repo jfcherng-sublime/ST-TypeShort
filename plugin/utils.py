@@ -1,7 +1,7 @@
 import re
 
 
-def snake_to_camel(snake: str, upper_first: bool = False) -> str:
+def snake_to_camel(snake: str, *, upper_first: bool = False) -> str:
     # title-cased words
     words = [word.title() for word in snake.split("_")]
     if words and not upper_first:

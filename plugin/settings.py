@@ -2,20 +2,15 @@ from typing import Any
 
 import sublime
 
-
-def get_package_name() -> str:
-    """Gets the package name."""
-    # __package__ will be "THE_PLUGIN_NAME.plugin" under this folder structure
-    # anyway, the top module should always be the plugin name
-    return __package__.partition(".")[0]
+from .constant import PLUGIN_NAME
 
 
 def get_package_path() -> str:
-    return "Packages/" + get_package_name()
+    return f"Packages/{PLUGIN_NAME}"
 
 
 def get_settings_file() -> str:
-    return get_package_name() + ".sublime-settings"
+    return f"{PLUGIN_NAME}.sublime-settings"
 
 
 def get_settings_object() -> sublime.Settings:

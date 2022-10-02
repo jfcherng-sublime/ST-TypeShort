@@ -1,12 +1,12 @@
 from typing import Any, Dict, List
 
-from .compiler import BindingType
+from .types import CompiledBinding
 
 
 class G:
     """This class stores application-level "G"lobal variables."""
 
-    syntax_infos = {
+    syntax_infos: Dict[str, Any] = {
         # syntax_file: {
         #     "file_basename": file_basename,
         #     "file_ext": file_ext,  # with dot
@@ -16,7 +16,7 @@ class G:
         #     "syntax_ids": syntax_ids,  # names represent this syntax
         # },
         # ...
-    }  # type: Dict[str, Any]
+    }
 
-    bindings = []  # type: List[BindingType]
+    bindings: List[CompiledBinding] = []
     """Compiled from user settings `bindings` via `BindingsCompiler`."""

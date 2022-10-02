@@ -1,28 +1,24 @@
-import copy
-from typing import Any, Dict, List, Optional
+from typing import Generator, List, Optional
 
-BindingType = Dict[str, Any]
+from .types import BindingDict, CompiledBinding
 
 
 class BindingsCompiler:
-    bindings = []  # type: List[BindingType]
-    binding_required_keys = ["syntax_list", "keymaps"]
+    _required_keys = {"syntax_list", "keymaps"}
 
-    def __init__(self, bindings: List[BindingType] = []) -> None:
-        self.bindings = copy.deepcopy(bindings)
+    def __init__(self, bindings: Optional[List[BindingDict]] = None) -> None:
+        self._bindings = bindings or []
 
-    def compile(self) -> List:
-        return [binding for binding in map(self._compile_binding, self.bindings) if binding]
+    def compile(self) -> Generator[CompiledBinding, None, None]:
+        yield from (binding for binding in map(self._compile_binding, self._bindings) if binding)
 
-    def _compile_binding(self, binding: Dict) -> Optional[Dict]:
-        if not all(key in binding for key in self.binding_required_keys):
+    def _compile_binding(self, binding: BindingDict) -> Optional[CompiledBinding]:
+        if not all((key in binding) for key in self._required_keys):
             return None
 
-        binding_c = {}  # type: BindingType
-
-        binding_c["syntax_list"] = set(binding["syntax_list"])
-        binding_c["syntax_list_selector"] = "|".join(binding_c["syntax_list"])
-        binding_c["keymaps"] = dict(binding["keymaps"])  # copy
-        binding_c["keymaps_search_max_length"] = max(map(len, binding["keymaps"].keys()))
-
-        return binding_c
+        return CompiledBinding(
+            syntax_list=set(binding["syntax_list"]),
+            syntax_list_selector="|".join(binding["syntax_list"]),  # this is wrong
+            keymaps=dict(binding["keymaps"]),
+            keymaps_search_max_length=max(map(len, binding["keymaps"].keys())),
+        )

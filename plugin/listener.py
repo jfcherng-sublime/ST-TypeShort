@@ -5,13 +5,16 @@ from typing import Any, Dict, List, Optional, Set
 import sublime
 import sublime_plugin
 
-from .settings import get_package_name, get_setting
+from plugin.types import CompiledBinding
+
+from .constant import PLUGIN_NAME
+from .settings import get_setting
 from .shared import G
 from .utils import camel_to_snake
 
 
 class TypeShortListener(sublime_plugin.EventListener):
-    plugin_cmd = camel_to_snake(get_package_name())
+    plugin_cmd = camel_to_snake(PLUGIN_NAME)
 
     name_xml_regex = re.compile(r"<key>name</key>\s*<string>(?P<name>[^<>]*?)", re.DOTALL)
     name_yaml_regex = re.compile(r"^name\s*:\s*['\"]?(?P<name>.*)['\"]?\s*$", re.MULTILINE)
@@ -40,9 +43,9 @@ class TypeShortListener(sublime_plugin.EventListener):
             for binding in G.bindings:
                 if (
                     # syntax matching such as "PHP"
-                    (self._get_current_syntaxes(view) & binding["syntax_list"])
+                    (self._get_current_syntaxes(view) & binding.syntax_list)
                     # scope matching such as "source.php"
-                    or view.match_selector(point, binding["syntax_list_selector"])
+                    or view.match_selector(point, binding.syntax_list_selector)
                 ):
                     job = self._test_point_with_binding(view, point, binding)
 
@@ -59,7 +62,7 @@ class TypeShortListener(sublime_plugin.EventListener):
             )
             # fmt: on
 
-    def _test_point_with_binding(self, view: sublime.View, point: int, binding: dict) -> Optional[Dict]:
+    def _test_point_with_binding(self, view: sublime.View, point: int, binding: CompiledBinding) -> Optional[Dict]:
         """
         @brief Test whether the binding can be applied to the point.
 
@@ -72,9 +75,9 @@ class TypeShortListener(sublime_plugin.EventListener):
         """
 
         # substr() the longest possible search to prevent from calling View API multiple times
-        check_content = view.substr(sublime.Region(point - binding["keymaps_search_max_length"], point))
+        check_content = view.substr(sublime.Region(point - binding.keymaps_search_max_length, point))
 
-        for search, replacement in binding["keymaps"].items():
+        for search, replacement in binding.keymaps.items():
             search_length = len(search)
 
             if check_content[-search_length:] == search:

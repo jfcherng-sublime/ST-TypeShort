@@ -23,7 +23,7 @@ class TypeShortCommand(sublime_plugin.TextCommand):
 
                 # wrong usage
                 if cursor_placeholder_count > 1:
-                    print_msg("ERROR: More than one cursor placeholder in `{}`".format(replacement))
+                    print_msg(f"ERROR: More than one cursor placeholder in `{replacement}`")
                     return
 
                 # correct usage
@@ -48,5 +48,5 @@ class TypeShortCommand(sublime_plugin.TextCommand):
                 sels.add(sublime.Region(cursor_position_fixed, cursor_position_fixed))
 
     def is_visible(self) -> bool:
-        """This command is not for user to run manually"""
+        # this command is not for user to be run manually.
         return False

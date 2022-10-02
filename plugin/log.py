@@ -1,22 +1,22 @@
+from .constant import PLUGIN_NAME
+
+
 def msg(message: str) -> str:
     """
-    @brief Generate plugin message.
+    Generates a plugin message.
 
-    @param message The message
-
-    @return The plugin message.
+    :param      message:  The message
     """
-    from .settings import get_package_name
 
-    return "[{plugin}] {message}".format(plugin=get_package_name(), message=message)
+    return f"[{PLUGIN_NAME}] {message}"
 
 
-def print_msg(message: str, show_message: bool = True) -> None:
+def print_msg(message: str, *, do: bool = True) -> None:
     """
-    @brief Print plugin message to ST's console.
+    Prints a plugin message.
 
-    @param message      The message
-    @param show_message Whether to print the message
+    :param      message:  The message
+    :param      do:       Whether to print the message
     """
-    if show_message:
+    if do:
         print(msg(message))
