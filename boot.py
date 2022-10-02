@@ -1,13 +1,12 @@
-from .plugin import set_up, tear_down
+def reload_plugin() -> None:
+    import sys
 
-# main plugin classes
-from .plugin.sublime_text.TypeShort import *  # noqa: F401, F403
-from .plugin.sublime_text.TypeShortCommand import *  # noqa: F401, F403
-
-
-def plugin_loaded() -> None:
-    set_up()
+    # remove all previously loaded plugin modules.
+    prefix = f"{__package__}."
+    for module_name in tuple(filter(lambda m: m.startswith(prefix) and m != __name__, sys.modules)):
+        del sys.modules[module_name]
 
 
-def plugin_unloaded() -> None:
-    tear_down()
+reload_plugin()
+
+from .plugin import *  # noqa: F401, F403

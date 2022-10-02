@@ -5,9 +5,9 @@ from typing import Any, Dict, List, Optional, Set
 import sublime
 import sublime_plugin
 
-from ..functions import camel_to_snake
-from ..Globals import Globals
-from ..settings import get_package_name, get_setting
+from .settings import get_package_name, get_setting
+from .shared import G
+from .utils import camel_to_snake
 
 
 class TypeShortListener(sublime_plugin.EventListener):
@@ -37,7 +37,7 @@ class TypeShortListener(sublime_plugin.EventListener):
         for region in view.sel():  # type: ignore
             point = region.begin()
 
-            for binding in Globals.bindings:
+            for binding in G.bindings:
                 if (
                     # syntax matching such as "PHP"
                     (self._get_current_syntaxes(view) & binding["syntax_list"])
@@ -95,7 +95,7 @@ class TypeShortListener(sublime_plugin.EventListener):
 
         syntax_file = str(view.settings().get("syntax"))
 
-        if syntax_file not in Globals.syntax_infos:
+        if syntax_file not in G.syntax_infos:
             file_basename = os.path.basename(syntax_file)
             file_name, file_ext = os.path.splitext(file_basename)
 
@@ -105,7 +105,7 @@ class TypeShortListener(sublime_plugin.EventListener):
             # in case there is an empty one
             syntax_ids = set([file_name, syntax_name]) - set([""])
 
-            Globals.syntax_infos[syntax_file] = {
+            G.syntax_infos[syntax_file] = {
                 "file_basename": file_basename,
                 "file_ext": file_ext,  # with dot
                 "file_name": file_name,  # no ext
@@ -114,7 +114,7 @@ class TypeShortListener(sublime_plugin.EventListener):
                 "syntax_ids": syntax_ids,  # names represent this syntax
             }
 
-        return Globals.syntax_infos[syntax_file]["syntax_ids"]
+        return G.syntax_infos[syntax_file]["syntax_ids"]
 
     def _find_syntax_name(self, syntax_file: str) -> Optional[str]:
         """

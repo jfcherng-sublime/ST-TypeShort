@@ -4,12 +4,7 @@ import sublime
 
 
 def get_package_name() -> str:
-    """
-    @brief Getsthe package name.
-
-    @return The package name.
-    """
-
+    """Gets the package name."""
     # __package__ will be "THE_PLUGIN_NAME.plugin" under this folder structure
     # anyway, the top module should always be the plugin name
     return __package__.partition(".")[0]
