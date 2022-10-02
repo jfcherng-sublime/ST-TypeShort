@@ -1,13 +1,17 @@
-from typing import Dict, List
+from typing import List
 
 import sublime
 import sublime_plugin
 
 from ..log import print_msg
+from ..types import ReplacementJobDict
 
 
 class TypeShortCommand(sublime_plugin.TextCommand):
-    def run(self, edit: sublime.Edit, jobs: List[Dict], cursor_placeholder: str = "{|}") -> None:
+    def is_visible(self) -> bool:
+        return False
+
+    def run(self, edit: sublime.Edit, jobs: List[ReplacementJobDict], cursor_placeholder: str = "{|}") -> None:
         cursor_placeholder_len = len(cursor_placeholder)
         cursor_fixed_offset = 0
 
@@ -23,10 +27,9 @@ class TypeShortCommand(sublime_plugin.TextCommand):
 
                 # wrong usage
                 if cursor_placeholder_count > 1:
-                    print_msg("ERROR: More than one cursor placeholder in `{}`".format(replacement))
-                    return
+                    print_msg(f"[ERROR] More than one cursor placeholder in replacement: {replacement}")
+                    continue
 
-                # correct usage
                 if cursor_placeholder_count == 1:
                     cursor_fixed_offset = (
                         replacement.index(cursor_placeholder) + cursor_placeholder_len - len(replacement)
@@ -46,7 +49,3 @@ class TypeShortCommand(sublime_plugin.TextCommand):
                 # add a new cursor
                 cursor_position_fixed = cursor_position + cursor_fixed_offset
                 sels.add(sublime.Region(cursor_position_fixed, cursor_position_fixed))
-
-    def is_visible(self) -> bool:
-        """This command is not for user to run manually"""
-        return False
