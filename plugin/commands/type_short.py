@@ -1,4 +1,4 @@
-from typing import List
+from __future__ import annotations
 
 import sublime
 import sublime_plugin
@@ -11,7 +11,7 @@ class TypeShortCommand(sublime_plugin.TextCommand):
     def is_visible(self) -> bool:
         return False
 
-    def run(self, edit: sublime.Edit, jobs: List[ReplacementJobDict], cursor_placeholder: str = "{|}") -> None:
+    def run(self, edit: sublime.Edit, jobs: list[ReplacementJobDict], cursor_placeholder: str = "{|}") -> None:
         cursor_placeholder_len = len(cursor_placeholder)
         cursor_fixed_offset = 0
 

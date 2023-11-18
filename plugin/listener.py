@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import asdict
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Optional, Set
 
 import sublime
 import sublime_plugin
@@ -13,7 +14,7 @@ from .types import CompiledBinding, ReplacementJob, ReplacementJobDict
 
 
 @lru_cache
-def _get_syntaxes_ids(syntax: sublime.Syntax) -> Set[str]:
+def _get_syntaxes_ids(syntax: sublime.Syntax) -> set[str]:
     return {Path(syntax.path).stem, syntax.name, syntax.scope} - {"", None}
 
 
@@ -30,7 +31,7 @@ class TypeShortListener(sublime_plugin.EventListener):
             return
 
         # jobs for the plugin command
-        jobs: List[ReplacementJobDict] = []
+        jobs: list[ReplacementJobDict] = []
 
         for region in view.sel():
             caret = region.b
@@ -56,7 +57,7 @@ class TypeShortListener(sublime_plugin.EventListener):
         view: sublime.View,
         point: int,
         binding: CompiledBinding,
-    ) -> Optional[ReplacementJob]:
+    ) -> ReplacementJob | None:
         # substr() the longest possible search to prevent from calling View API multiple times
         check_content = view.substr(sublime.Region(point - binding.keymaps_search_max_length, point))
 

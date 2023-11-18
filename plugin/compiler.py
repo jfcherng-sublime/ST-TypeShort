@@ -1,4 +1,6 @@
-from typing import Generator, List, Optional
+from __future__ import annotations
+
+from typing import Generator
 
 from .types import BindingDict, CompiledBinding
 
@@ -6,13 +8,13 @@ from .types import BindingDict, CompiledBinding
 class BindingsCompiler:
     _required_keys = {"syntax_list", "keymaps"}
 
-    def __init__(self, bindings: Optional[List[BindingDict]] = None) -> None:
+    def __init__(self, bindings: list[BindingDict] | None = None) -> None:
         self._bindings = bindings or []
 
     def compile(self) -> Generator[CompiledBinding, None, None]:
         yield from (binding for binding in map(self._compile_binding, self._bindings) if binding)
 
-    def _compile_binding(self, binding: BindingDict) -> Optional[CompiledBinding]:
+    def _compile_binding(self, binding: BindingDict) -> CompiledBinding | None:
         if not all((key in binding) for key in self._required_keys):
             return None
 

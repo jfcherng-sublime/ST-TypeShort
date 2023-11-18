@@ -1,26 +1,28 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Dict, List, Set, Tuple, TypedDict
+from typing import TypedDict
 
 
 class BindingDict(TypedDict):
-    syntax_list: List[str]
-    keymaps: Dict[str, str]
+    syntax_list: list[str]
+    keymaps: dict[str, str]
 
 
 @dataclass
 class CompiledBinding:
-    syntax_list: Set[str]
+    syntax_list: set[str]
     syntax_list_selector: str
-    keymaps: Dict[str, str]
+    keymaps: dict[str, str]
     keymaps_search_max_length: int
 
 
 @dataclass
 class ReplacementJob:
-    region: Tuple[int, int]
+    region: tuple[int, int]
     replacement: str
 
 
 class ReplacementJobDict(TypedDict):
-    region: List[int]
+    region: list[int]
     replacement: str

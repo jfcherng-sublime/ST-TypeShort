@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .commands.type_short import TypeShortCommand
 from .compiler import BindingsCompiler
 from .listener import TypeShortListener
