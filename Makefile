@@ -1,16 +1,18 @@
 .PHONY: all
-all: fix
+all:
 
-.PHONY: check
-check:
+.PHONY: install
+install:
+	python -m pip install -U pip -r requirements.txt
+
+.PHONY: ci-check
+ci-check:
 	mypy -p plugin
-	flake8 .
-	pycln --config pyproject.toml --check .
-	black --check .
-	isort --check .
+	ruff check --diff --preview .
+	black --diff --preview --check .
 
-.PHONY: fix
-fix:
-	pycln --config pyproject.toml .
-	black .
-	isort .
+.PHONY: ci-fix
+ci-fix:
+	ruff check --preview --fix .
+	# ruff format --preview .
+	black --preview .
