@@ -1,9 +1,10 @@
 # ST-TypeShort
 
-[![Travis (.org) branch](https://img.shields.io/travis/jfcherng-sublime/ST-TypeShort/master?style=flat-square)](https://travis-ci.org/jfcherng-sublime/ST-TypeShort)
+[![Required ST Build](https://img.shields.io/badge/ST-4114+-orange.svg?style=flat-square&logo=sublime-text)](https://www.sublimetext.com)
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/jfcherng-sublime/ST-TypeShort/python.yml?branch=st4&style=flat-square)](https://github.com/jfcherng-sublime/ST-TypeShort/actions)
 [![Package Control](https://img.shields.io/packagecontrol/dt/TypeShort?style=flat-square)](https://packagecontrol.io/packages/TypeShort)
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/jfcherng-sublime/ST-TypeShort?style=flat-square&logo=github)](https://github.com/jfcherng-sublime/ST-TypeShort/tags)
-[![Project license](https://img.shields.io/github/license/jfcherng-sublime/ST-TypeShort?style=flat-square&logo=github)](https://github.com/jfcherng-sublime/ST-TypeShort/blob/master/LICENSE)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/jfcherng-sublime/ST-TypeShort?style=flat-square&logo=github)](https://github.com/jfcherng-sublime/ST-TypeShort/tags)
+[![Project license](https://img.shields.io/github/license/jfcherng-sublime/ST-TypeShort?style=flat-square&logo=github)](https://github.com/jfcherng-sublime/ST-TypeShort/blob/st4/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/jfcherng-sublime/ST-TypeShort?style=flat-square&logo=github)](https://github.com/jfcherng-sublime/ST-TypeShort/stargazers)
 [![Donate to this project using Paypal](https://img.shields.io/badge/paypal-donate-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/jfcherng/5usd)
 
